@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#e85d04">
+    <title>檳城 5 天 4 夜深度遊</title>
+    <style>
+        :root {
+            --primary-color: #e85d04;
+            --secondary-color: #f48c06;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-light: #7f8c8d;
+            --nav-height: 80px;
+            --header-height: 60px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            padding-bottom: calc(var(--nav-height) + 20px);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .app-header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            z-index: 1000;
+            padding-top: env(safe-area-inset-top);
+        }
+
+        .app-header h1 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 20px 0 15px 0;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .section-title span {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .day-view {
+            display: none;
+            animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .day-view.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.15s;
+        }
+        .card:active { transform: scale(0.98); }
+
+        .card-content {
+            padding: 16px;
+        }
+
+        .time-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #fff3e0;
+            color: var(--primary-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card h3 {
+            font-size: 1.05rem;
+            margin: 0 0 6px 0;
+            line-height: 1.4;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin: 0 0 8px 0;
+            line-height: 1.5;
+        }
+
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            background: #f1f2f6;
+            color: #57606f;
+            border-radius: 4px;
+        }
+
+        .tag.michelin {
+            background: #ffeae6;
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .action-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+            flex-wrap: wrap;
+        }
+
+        .btn-map {
+            flex: 1;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f8ff;
+            color: #007aff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .btn-map svg {
+            width: 14px;
+            height: 14px;
+            margin-right: 5px;
+            fill: currentColor;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-around;
+            padding-bottom: env(safe-area-inset-bottom);
+            z-index: 1001;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #95a5a6;
+            font-size: 0.7rem;
+            font-weight: 500;
+            background: none;
+            border: none;
+            padding: 5px 0;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-icon {
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .highlight { color: var(--primary-color); font-weight: 600; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (min-width: 601px) {
+            .container { max-width: 800px; }
+            .bottom-nav {
+                max-width: 600px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-radius: 20px 20px 0 0;
+                border: 1px solid rgba(0,0,0,0.08);
+                border-bottom: none;
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            }
+            .app-header { border-radius: 0 0 20px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="app-header">
+    <h1 id="header-title">Day 1｜抵達檳城</h1>
+</header>
+
+<div class="container">
+
+    <!-- Day 1 -->
+    <div id="view-day1" class="day-view active">
+        <div class="section-title">Day 1 <span>1月14日 (三)</span></div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">15:45</span>
+                <h3>抵達檳城機場</h3>
+                <p>HK Express <span class="highlight">UO746</span>，HKG 11:55 → PEN 15:45</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Penang+International+Airport&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航至機場
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">晚餐</span>
+                <h3>紐冷街夜市 (New Lane)</h3>
+                <p>推薦：碳燒海鮮炒粿條、沙嗲、蠔煎。</p>
+                <div class="tags-row">
+                    <span class="tag">地道美食</span>
+                    <span class="tag">夜市</span>
+                </div>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=New+Lane+Street+Food+Stalls+Penang&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day 2 -->
+    <div id="view-day2" class="day-view">
+        <div class="section-title">Day 2 <span>1月15日 (四)</span></div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">早餐</span>
+                <h3>Hot Bowl White Curry Mee</h3>
+                <p>必試：白咖哩麵、白斬雞。</p>
+                <div class="tags-row">
+                    <span class="tag michelin">必比登推薦</span>
+                </div>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Hot+Bowl+White+Curry+Mee&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">上午</span>
+                <h3>升旗山 (Penang Hill)</h3>
+                <p>搭乘纜車，俯瞰檳城全景。</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Penang+Hill+Lower+Station&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航 (纜車站)
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">午餐</span>
+                <h3>雙重享受</h3>
+                <p>1. 明記砂煲肉骨茶<br>2. 羅記鴨肉棵條湯</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Ming+Qi+Claypot+Bak+Kut+Teh&hl=zh-HK" class="btn-map" target="_blank">📍肉骨茶</a>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Restoran+Loh+Kei+Duck+Meat&hl=zh-HK" class="btn-map" target="_blank">📍鴨肉</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">晚餐</span>
+                <h3>Communal Table by Gēn 根</h3>
+                <p>現代亞洲創意料理</p>
+                <div class="tags-row">
+                    <span class="tag michelin">米其林推薦</span>
+                </div>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Communal+Table+by+Gen&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day 3 -->
+    <div id="view-day3" class="day-view">
+        <div class="section-title">Day 3 <span>1月16日 (五)</span></div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">早餐</span>
+                <h3>多春茶座 (Toh Soon Cafe)</h3>
+                <p>巷弄炭烤牛油咖椰吐司、半熟蛋。</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Toh+Soon+Cafe&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">上午</span>
+                <h3>喬治市散策</h3>
+                <p>P.66 文具店、壁畫、本頭公巷、潮人居。</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Penang+Street+Art&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航起點
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">午餐</span>
+                <h3>Auntie Gaik Lean's</h3>
+                <p>正宗娘惹菜 (Nyonya Cuisine)。</p>
+                <div class="tags-row">
+                    <span class="tag michelin">米其林推薦</span>
+                </div>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Auntie+Gaik+Lean's+Old+School+Eatery&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">晚餐</span>
+                <h3>德成飯店 (Tek Sen)</h3>
+                <p>招牌火肉（燒肉）及道地煮炒。</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Tek+Sen+Restaurant&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day 4 -->
+    <div id="view-day4" class="day-view">
+        <div class="section-title">Day 4 <span>1月17日 (六)</span></div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">早餐</span>
+                <h3>七條路巴剎</h3>
+                <p>市場早餐：鴨肉粿條湯、雲吞麵等。</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Cecil+Street+Market&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">上午</span>
+                <h3>Hin Market</h3>
+                <p>Hin Bus Depot 文創市集與藝術展覽。</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Hin+Bus+Depot&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">午餐</span>
+                <h3>正宗橋頭福建麵</h3>
+                <p>濃郁蝦湯福建麵。</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Bridge+Street+Hokkien+Mee&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">晚餐</span>
+                <h3>汕頭街夜市 (Kimberley Street)</h3>
+                <p>四大天王：鴨粥粿汁、天皇雞腳、炒粿條、四果湯。</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Kimberley+Street+Food+Night+Market&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Day 5 -->
+    <div id="view-day5" class="day-view">
+        <div class="section-title">Day 5 <span>1月18日 (日)</span></div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">早餐</span>
+                <h3>檳榔律馳名叻沙</h3>
+                <p>最後回味：亞參叻沙。</p>
+                <div class="action-row">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Penang+Road+Famous+Laksa&hl=zh-HK" class="btn-map" target="_blank">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        導航
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-content">
+                <span class="time-badge">16:30</span>
+                <h3>返程</h3>
+                <p>HK Express <span class="highlight">UO787</span>，PEN 16:30 → HKG 20:15</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('day1', 'Day 1｜抵達檳城')">
+        <span class="nav-icon">🛬</span>
+        Day 1
+    </button>
+    <button class="nav-item" onclick="switchTab('day2', 'Day 2｜升旗山')">
+        <span class="nav-icon">🚠</span>
+        Day 2
+    </button>
+    <button class="nav-item" onclick="switchTab('day3', 'Day 3｜喬治市')">
+        <span class="nav-icon">📷</span>
+        Day 3
+    </button>
+    <button class="nav-item" onclick="switchTab('day4', 'Day 4｜市集')">
+        <span class="nav-icon">🛍️</span>
+        Day 4
+    </button>
+    <button class="nav-item" onclick="switchTab('day5', 'Day 5｜返程')">
+        <span class="nav-icon">🛫</span>
+        Day 5
+    </button>
+</nav>
+
+<script>
+    function switchTab(viewId, title) {
+        const buttons = document.querySelectorAll('.nav-item');
+        buttons.forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.getAttribute('onclick').includes(viewId)) {
+                btn.classList.add('active');
+            }
+        });
+
+        document.getElementById('header-title').textContent = title;
+
+        const views = document.querySelectorAll('.day-view');
+        views.forEach(view => view.classList.remove('active'));
+
+        const target = document.getElementById('view-' + viewId);
+        if (target) {
+            target.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+    }
+</script>
+
+</body>
+</html>
