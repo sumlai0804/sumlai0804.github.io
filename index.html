@@ -27,12 +27,12 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
-            padding-bottom: calc(var(--nav-height) + 20px);
+            padding-bottom: calc(var(--nav-height) + 30px);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Header with Weather */
+        /* Header */
         .app-header {
             position: sticky;
             top: 0;
@@ -49,241 +49,118 @@
             padding-top: env(safe-area-inset-top);
         }
 
-        .header-left h1 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--text-main);
-        }
+        .header-left h1 { font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--text-main); }
+        .header-left p { font-size: 0.75rem; color: var(--text-light); margin: 2px 0 0 0; }
 
-        .header-left p {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin: 2px 0 0 0;
-        }
-
-        /* Weather Widget */
         .weather-widget {
-            display: flex;
-            align-items: center;
-            background: #f8f9fa;
-            padding: 5px 10px;
-            border-radius: 12px;
-            border: 1px solid #eee;
+            display: flex; align-items: center; background: #f8f9fa; padding: 5px 10px;
+            border-radius: 10px; border: 1px solid #eee;
         }
+        .weather-icon { font-size: 1.2rem; margin-right: 6px; }
+        .weather-info { display: flex; flex-direction: column; align-items: flex-end; }
+        .temp { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+        .location { font-size: 0.6rem; color: var(--text-light); text-transform: uppercase; }
 
-        .weather-icon {
-            font-size: 1.4rem;
-            margin-right: 8px;
-        }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-        .weather-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
+        /* Section Title */
+        .section-header { margin: 10px 0 20px 0; }
+        .section-title { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
+        .section-desc { font-size: 0.9rem; color: var(--text-light); }
 
-        .temp {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .location {
-            font-size: 0.65rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-
-        /* Date Badge */
-        .date-badge {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            flex-shrink: 0;
-            margin-right: 15px;
-            box-shadow: 0 2px 8px rgba(232, 93, 4, 0.15);
-        }
-
-        .date-num {
-            font-size: 1.2rem;
-            font-weight: 800;
-            line-height: 1;
-        }
-
-        .date-day {
-            font-size: 0.6rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            margin: 25px 0 15px 0;
-        }
-
-        .section-title {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--text-main);
-        }
-
-        .day-view {
-            display: none;
-            animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+        /* Cards Layout: Flex Row */
+        .day-view { display: none; animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
         .day-view.active { display: block; }
 
         .card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-            margin-bottom: 20px;
-            overflow: hidden;
-            transition: transform 0.15s;
-            border-left: 4px solid transparent;
+            background: var(--card-bg); border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 16px;
+            overflow: hidden; transition: transform 0.15s; border-left: 4px solid transparent;
+            display: flex;
         }
-        
-        /* Special styling for Flight cards */
         .card.flight { border-left-color: #0984e3; }
         .card.food { border-left-color: var(--primary-color); }
         .card:active { transform: scale(0.99); }
 
-        .card-content { padding: 16px; }
-
-        .time-badge {
-            display: inline-flex;
-            align-items: center;
-            background: #f1f2f6;
-            color: #57606f;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .card h3 {
-            font-size: 1.1rem;
-            margin: 0 0 6px 0;
-            line-height: 1.4;
-            color: var(--text-main);
-        }
-
-        .card p {
-            font-size: 0.95rem;
-            color: var(--text-light);
-            margin: 0 0 10px 0;
-            line-height: 1.5;
-        }
-
-        .tags-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-
-        .tag {
-            font-size: 0.7rem;
-            padding: 3px 8px;
-            background: #f1f2f6;
-            color: #57606f;
-            border-radius: 4px;
-        }
-
-        .tag.michelin { background: #ffeae6; color: #d32f2f; font-weight: 600; }
-
-        .action-row {
-            display: flex;
-            gap: 10px;
-            margin-top: 5px;
-        }
-
-        .btn-map {
+        .card-content {
             flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f1f8ff;
-            color: #007aff;
-            border: none;
-            padding: 10px 12px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-decoration: none;
-        }
-
-        .btn-map svg { width: 16px; height: 16px; margin-right: 6px; fill: currentColor; }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: var(--nav-height);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(0,0,0,0.08);
-            display: flex;
-            justify-content: space-around;
-            padding-bottom: env(safe-area-inset-bottom);
-            z-index: 1001;
-        }
-
-        .nav-item {
-            flex: 1;
+            padding: 16px;
+            min-width: 0;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-image-right {
+            width: 110px;
+            background-color: #fafafa;
+            display: flex;
             align-items: center;
             justify-content: center;
-            color: #95a5a6;
-            font-size: 0.7rem;
-            font-weight: 500;
-            background: none;
-            border: none;
-            padding: 5px 0;
-            cursor: pointer;
+            overflow: hidden;
+            flex-shrink: 0;
         }
 
-        .nav-item.active { color: var(--primary-color); }
-        .nav-icon { font-size: 1.4rem; margin-bottom: 4px; }
+        .card-image-right img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .time-badge {
+            display: inline-flex; align-items: center; background: #f1f2f6;
+            color: #57606f; padding: 4px 8px; border-radius: 6px;
+            font-size: 0.75rem; font-weight: 600; margin-bottom: 8px;
+            align-self: flex-start;
+        }
+
+        .card h3 { font-size: 1.05rem; margin: 0 0 6px 0; line-height: 1.35; color: var(--text-main); }
+        .card p { font-size: 0.85rem; color: var(--text-light); margin: 0 0 10px 0; line-height: 1.4; }
+
+        .tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+        .tag { font-size: 0.65rem; padding: 3px 6px; background: #f1f2f6; color: #57606f; border-radius: 4px; }
+        .tag.michelin { background: #ffeae6; color: #d32f2f; font-weight: 600; }
+
+        .action-row { display: flex; gap: 8px; margin-top: auto; }
+        .btn-map {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            background: #f1f8ff; color: #007aff; border: none; padding: 8px 10px;
+            border-radius: 8px; font-size: 0.8rem; font-weight: 600; text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn-map svg { width: 14px; height: 14px; margin-right: 4px; fill: currentColor; }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 15px; padding-bottom: env(safe-area-inset-bottom); z-index: 1001;
+        }
+
+        .nav-date {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 56px; border-radius: 12px; background: transparent; border: none;
+            margin: 0 3px; transition: all 0.2s ease; cursor: pointer;
+        }
+
+        .nav-date-num { font-size: 1.1rem; font-weight: 700; color: #95a5a6; line-height: 1.1; }
+        .nav-date-day { font-size: 0.65rem; font-weight: 600; color: #bdc3c7; text-transform: uppercase; margin-top: 2px; }
+
+        .nav-date.active { background: #fff3e0; transform: translateY(-2px); }
+        .nav-date.active .nav-date-num { color: var(--primary-color); }
+        .nav-date.active .nav-date-day { color: var(--secondary-color); }
+
         .highlight { color: var(--primary-color); font-weight: 600; }
 
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         @media (min-width: 601px) {
             .container { max-width: 800px; }
-            .bottom-nav {
-                max-width: 600px;
-                left: 50%;
-                transform: translateX(-50%);
-                border-radius: 20px 20px 0 0;
-                border: 1px solid rgba(0,0,0,0.08);
-                border-bottom: none;
-                box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
-            }
+            .bottom-nav { max-width: 600px; left: 50%; transform: translateX(-50%); border-radius: 20px 20px 0 0; border: 1px solid rgba(0,0,0,0.08); border-bottom: none; padding: 0 25px; }
             .app-header { padding: 0 calc(50% - 400px + 20px); }
+            .card-image-right { width: 140px; }
         }
     </style>
 </head>
@@ -308,11 +185,8 @@
     <!-- Day 1 -->
     <div id="view-day1" class="day-view active">
         <div class="section-header">
-            <div class="date-badge">
-                <span class="date-num">14</span>
-                <span class="date-day">WED</span>
-            </div>
-            <div class="section-title">Day 1｜抵達檳城</div>
+            <div class="section-title">抵達檳城</div>
+            <div class="section-desc">Day 1｜探索夜市美食</div>
         </div>
 
         <div class="card flight">
@@ -323,26 +197,29 @@
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Penang+International+Airport&hl=zh-HK" class="btn-map" target="_blank">
                         <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航至機場
+                        導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/564ba747-5926-466e-9ef2-472d46f66d0e.png" alt="Airplane">
             </div>
         </div>
 
         <div class="card food">
             <div class="card-content">
                 <span class="time-badge">晚餐</span>
-                <h3>紐冷街夜市 (New Lane)</h3>
-                <p>必吃：碳燒海鮮炒粿條、沙嗲、蠔煎。</p>
-                <div class="tags-row">
-                    <span class="tag">地道美食</span><span class="tag">夜市</span>
-                </div>
+                <h3>紐冷街夜市</h3>
+                <p>碳燒海鮮炒粿條、沙嗲。</p>
+                <div class="tags-row"><span class="tag">地道</span><span class="tag">夜市</span></div>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=New+Lane+Street+Food+Stalls+Penang&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/a136b5e3-8847-4e46-8830-254510f36be6.png" alt="Char Kway Teow">
             </div>
         </div>
     </div>
@@ -350,66 +227,71 @@
     <!-- Day 2 -->
     <div id="view-day2" class="day-view">
         <div class="section-header">
-            <div class="date-badge">
-                <span class="date-num">15</span>
-                <span class="date-day">THU</span>
-            </div>
-            <div class="section-title">Day 2｜升旗山</div>
+            <div class="section-title">升旗山與美食</div>
+            <div class="section-desc">Day 2｜米其林與纜車</div>
         </div>
 
         <div class="card food">
             <div class="card-content">
                 <span class="time-badge">早餐</span>
-                <h3>Hot Bowl White Curry Mee</h3>
+                <h3>Hot Bowl White Curry</h3>
                 <p>白咖哩麵、白斬雞。</p>
-                <div class="tags-row"><span class="tag michelin">必比登推薦</span></div>
+                <div class="tags-row"><span class="tag michelin">必比登</span></div>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Hot+Bowl+White+Curry+Mee&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/0aa1d638-c400-4c4c-8f3e-e84aa8c22322.png" alt="White Curry Mee">
             </div>
         </div>
 
         <div class="card">
             <div class="card-content">
                 <span class="time-badge">上午</span>
-                <h3>升旗山 (Penang Hill)</h3>
-                <p>搭乘纜車觀光，俯瞰檳城全景。</p>
+                <h3>升旗山</h3>
+                <p>搭乘纜車觀光。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Penang+Hill+Lower+Station&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航 (纜車站)
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>纜車站
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/61b24289-83cb-44f4-b125-8a4b37e2b1be.png" alt="Penang Hill Train">
             </div>
         </div>
 
         <div class="card food">
             <div class="card-content">
                 <span class="time-badge">午餐</span>
-                <h3>雙重享受</h3>
-                <p>1. 明記砂煲肉骨茶<br>2. 羅記鴨肉棵條湯</p>
+                <h3>砂煲肉骨茶</h3>
+                <p>明記肉骨茶與羅記鴨肉。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Ming+Qi+Claypot+Bak+Kut+Teh&hl=zh-HK" class="btn-map" target="_blank">📍肉骨茶</a>
-                    <a href="https://www.google.com/maps/search/?api=1&query=Restoran+Loh+Kei+Duck+Meat&hl=zh-HK" class="btn-map" target="_blank">📍鴨肉</a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/35ac808d-215f-40ef-ae0e-a9453dd1d90d.png" alt="Bak Kut Teh">
             </div>
         </div>
 
         <div class="card food">
             <div class="card-content">
                 <span class="time-badge">晚餐</span>
-                <h3>Communal Table by Gēn 根</h3>
-                <p>現代亞洲創意料理 (Modern Asian)</p>
-                <div class="tags-row"><span class="tag michelin">米其林推薦</span></div>
+                <h3>Gēn 根</h3>
+                <p>現代亞洲創意料理。</p>
+                <div class="tags-row"><span class="tag michelin">米其林</span></div>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Communal+Table+by+Gen&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/2d4657ec-6913-4f43-8499-45bf8c5076df.png" alt="Modern Asian Food">
             </div>
         </div>
     </div>
@@ -417,24 +299,23 @@
     <!-- Day 3 -->
     <div id="view-day3" class="day-view">
         <div class="section-header">
-            <div class="date-badge">
-                <span class="date-num">16</span>
-                <span class="date-day">FRI</span>
-            </div>
-            <div class="section-title">Day 3｜喬治市</div>
+            <div class="section-title">喬治市古蹟</div>
+            <div class="section-desc">Day 3｜文化與娘惹菜</div>
         </div>
 
         <div class="card food">
             <div class="card-content">
                 <span class="time-badge">早餐</span>
-                <h3>多春茶座 (Toh Soon Cafe)</h3>
+                <h3>多春茶座</h3>
                 <p>炭烤牛油咖椰吐司、半熟蛋。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Toh+Soon+Cafe&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/d1019600-32ba-4548-a789-60ec2d1a906d.png" alt="Kaya Toast">
             </div>
         </div>
 
@@ -442,13 +323,15 @@
             <div class="card-content">
                 <span class="time-badge">上午</span>
                 <h3>喬治市散策</h3>
-                <p>P.66 文具店 → 癲倒博物館 → 壁畫區。</p>
+                <p>壁畫、博物館、文具店。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Penang+Street+Art&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航起點
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>起點
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/27e86c28-1027-477d-843a-28aa17e291e5.png" alt="Murals">
             </div>
         </div>
 
@@ -456,28 +339,32 @@
             <div class="card-content">
                 <span class="time-badge">午餐</span>
                 <h3>Auntie Gaik Lean's</h3>
-                <p>正宗娘惹菜 (Nyonya Cuisine)。</p>
-                <div class="tags-row"><span class="tag michelin">米其林推薦</span></div>
+                <p>正宗娘惹菜，必試娘惹小金杯 (Kueh Pie Tee)。</p>
+                <div class="tags-row"><span class="tag michelin">米其林</span></div>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Auntie+Gaik+Lean's+Old+School+Eatery&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/030d555c-b1e6-40b5-85cf-0bfb7b83556c.png" alt="Kueh Pie Tee">
             </div>
         </div>
 
         <div class="card food">
             <div class="card-content">
                 <span class="time-badge">晚餐</span>
-                <h3>德成飯店 (Tek Sen)</h3>
-                <p>招牌火肉（燒肉）及道地煮炒。</p>
+                <h3>德成飯店</h3>
+                <p>招牌火肉（燒肉）。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Tek+Sen+Restaurant&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/65f34727-888c-4ed6-b8a8-a27307d12284.png" alt="Roasted Pork">
             </div>
         </div>
     </div>
@@ -485,24 +372,23 @@
     <!-- Day 4 -->
     <div id="view-day4" class="day-view">
         <div class="section-header">
-            <div class="date-badge">
-                <span class="date-num">17</span>
-                <span class="date-day">SAT</span>
-            </div>
-            <div class="section-title">Day 4｜市集與夜市</div>
+            <div class="section-title">市集與夜市</div>
+            <div class="section-desc">Day 4｜文創與傳統</div>
         </div>
 
         <div class="card food">
             <div class="card-content">
                 <span class="time-badge">早餐</span>
                 <h3>七條路巴剎</h3>
-                <p>市場早餐：鴨肉粿條湯、雲吞麵。</p>
+                <p>鴨肉粿條湯、雲吞麵。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Cecil+Street+Market&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/a136b5e3-8847-4e46-8830-254510f36be6.png" alt="Market Food">
             </div>
         </div>
 
@@ -510,41 +396,48 @@
             <div class="card-content">
                 <span class="time-badge">上午</span>
                 <h3>Hin Market</h3>
-                <p>Hin Bus Depot 週末限定文創市集。</p>
+                <p>週末限定文創市集。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Hin+Bus+Depot&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <!-- 這裡換上了新生成的 Hin Bus Depot 紅磚牆市集插圖 -->
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/b8a32436-5b47-4bfa-8381-b5fd9a0a6ce6.png" alt="Hin Bus Depot Art Market">
             </div>
         </div>
 
         <div class="card food">
             <div class="card-content">
                 <span class="time-badge">午餐</span>
-                <h3>正宗橋頭福建麵</h3>
+                <h3>橋頭福建麵</h3>
                 <p>濃郁蝦湯福建麵。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Bridge+Street+Hokkien+Mee&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/0aa1d638-c400-4c4c-8f3e-e84aa8c22322.png" alt="Noodles">
             </div>
         </div>
 
         <div class="card food">
             <div class="card-content">
                 <span class="time-badge">晚餐</span>
-                <h3>汕頭街夜市 (Kimberley Street)</h3>
-                <p>鴨粥粿汁、天皇雞腳、炒粿條、四果湯。</p>
+                <h3>汕頭街夜市</h3>
+                <p>鴨粥粿汁、四果湯。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Kimberley+Street+Food+Night+Market&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/a136b5e3-8847-4e46-8830-254510f36be6.png" alt="Street Food">
             </div>
         </div>
     </div>
@@ -552,11 +445,8 @@
     <!-- Day 5 -->
     <div id="view-day5" class="day-view">
         <div class="section-header">
-            <div class="date-badge">
-                <span class="date-num">18</span>
-                <span class="date-day">SUN</span>
-            </div>
-            <div class="section-title">Day 5｜返程</div>
+            <div class="section-title">返程日</div>
+            <div class="section-desc">Day 5｜最後回味</div>
         </div>
 
         <div class="card food">
@@ -566,10 +456,12 @@
                 <p>最後回味：亞參叻沙。</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Penang+Road+Famous+Laksa&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>導航
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/b6b3025e-13e2-47d3-997b-f42d53d80f14.png" alt="Assam Laksa">
             </div>
         </div>
 
@@ -577,45 +469,48 @@
             <div class="card-content">
                 <span class="time-badge">16:30</span>
                 <h3>返程</h3>
-                <p>HK Express <span class="highlight">UO787</span><br>PEN 16:30 → HKG 20:15</p>
+                <p>HK Express <span class="highlight">UO787</span><br>PEN → HKG</p>
                 <div class="action-row">
                     <a href="https://www.google.com/maps/search/?api=1&query=Penang+International+Airport&hl=zh-HK" class="btn-map" target="_blank">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        導航至機場
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>機場
                     </a>
                 </div>
+            </div>
+            <div class="card-image-right">
+                <img src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/564ba747-5926-466e-9ef2-472d46f66d0e.png" alt="Airplane">
             </div>
         </div>
     </div>
 
 </div>
 
+<!-- Date Navigation Bar -->
 <nav class="bottom-nav">
-    <button class="nav-item active" onclick="switchTab('day1', 'Day 1｜抵達檳城')">
-        <span class="nav-icon">🛬</span>
-        Day 1
+    <button class="nav-date active" onclick="switchTab('day1', 'Day 1｜抵達檳城')">
+        <span class="nav-date-num">14</span>
+        <span class="nav-date-day">WED</span>
     </button>
-    <button class="nav-item" onclick="switchTab('day2', 'Day 2｜升旗山')">
-        <span class="nav-icon">🚠</span>
-        Day 2
+    <button class="nav-date" onclick="switchTab('day2', 'Day 2｜升旗山')">
+        <span class="nav-date-num">15</span>
+        <span class="nav-date-day">THU</span>
     </button>
-    <button class="nav-item" onclick="switchTab('day3', 'Day 3｜喬治市')">
-        <span class="nav-icon">📷</span>
-        Day 3
+    <button class="nav-date" onclick="switchTab('day3', 'Day 3｜喬治市')">
+        <span class="nav-date-num">16</span>
+        <span class="nav-date-day">FRI</span>
     </button>
-    <button class="nav-item" onclick="switchTab('day4', 'Day 4｜市集')">
-        <span class="nav-icon">🛍️</span>
-        Day 4
+    <button class="nav-date" onclick="switchTab('day4', 'Day 4｜市集')">
+        <span class="nav-date-num">17</span>
+        <span class="nav-date-day">SAT</span>
     </button>
-    <button class="nav-item" onclick="switchTab('day5', 'Day 5｜返程')">
-        <span class="nav-icon">🛫</span>
-        Day 5
+    <button class="nav-date" onclick="switchTab('day5', 'Day 5｜返程')">
+        <span class="nav-date-num">18</span>
+        <span class="nav-date-day">SUN</span>
     </button>
 </nav>
 
 <script>
     function switchTab(viewId, title) {
-        const buttons = document.querySelectorAll('.nav-item');
+        const buttons = document.querySelectorAll('.nav-date');
         buttons.forEach(btn => {
             btn.classList.remove('active');
             if (btn.getAttribute('onclick').includes(viewId)) {
