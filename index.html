@@ -1,509 +1,777 @@
 <!DOCTYPE html>
-
-<html lang="zh-HK">
+<html lang="zh-Hant-HK">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
-<meta content="yes" name="apple-mobile-web-app-capable"/>
-<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
-<meta content="#e85d04" name="theme-color"/>
-<title>檳城 5 天 4 夜深度遊</title>
-<style>
-        :root {
-            --primary-color: #e85d04;
-            --secondary-color: #f48c06;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-main: #2c3e50;
-            --text-light: #7f8c8d;
-            --nav-height: 80px;
-            --header-height: 70px;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇰🇷 韓國雙城自駕遊 9天8夜極致卡通指南</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Cute Cartoon Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Noto+Sans+HK:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            padding-bottom: calc(var(--nav-height) + 30px);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'Fredoka', 'Noto Sans HK', sans-serif;
+            background-color: #FAF6EE;
+            color: #4A3E3D;
         }
-
-        /* Header */
-        .app-header {
-            position: sticky;
-            top: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            height: var(--header-height);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            z-index: 1000;
-            padding-top: env(safe-area-inset-top);
+        /* Custom Cartoon Style Shadows and Borders */
+        .cartoon-card {
+            background: #FFFFFF;
+            border: 3px solid #4A3E3D;
+            box-shadow: 5px 5px 0px #4A3E3D;
+            border-radius: 24px;
+            transition: all 0.2s ease;
         }
-
-        .header-left h1 { font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--text-main); }
-        .header-left p { font-size: 0.75rem; color: var(--text-light); margin: 2px 0 0 0; }
-
-        .weather-widget {
-            display: flex; align-items: center; background: #f8f9fa; padding: 5px 10px;
-            border-radius: 10px; border: 1px solid #eee;
+        .cartoon-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px #4A3E3D;
         }
-        .weather-icon { font-size: 1.2rem; margin-right: 6px; }
-        .weather-info { display: flex; flex-direction: column; align-items: flex-end; }
-        .temp { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
-        .location { font-size: 0.6rem; color: var(--text-light); text-transform: uppercase; }
-
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-
-        /* Section Title */
-        .section-header { margin: 10px 0 20px 0; }
-        .section-title { font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
-        .section-desc { font-size: 0.9rem; color: var(--text-light); }
-
-        /* Cards Layout: Flex Row */
-        .day-view { display: none; animation: fadeUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .day-view.active { display: block; }
-
-        .card {
-            background: var(--card-bg); border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 16px;
-            overflow: hidden; transition: transform 0.15s; border-left: 4px solid transparent;
-            display: flex;
+        .cartoon-btn {
+            border: 3px solid #4A3E3D;
+            box-shadow: 3px 3px 0px #4A3E3D;
+            transition: all 0.1s ease;
         }
-        .card.flight { border-left-color: #0984e3; }
-        .card.food { border-left-color: var(--primary-color); }
-        .card:active { transform: scale(0.99); }
-
-        .card-content {
-            flex: 1;
-            padding: 16px;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .cartoon-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px #4A3E3D;
         }
-
-        .card-image-right {
-            width: 110px;
-            background-color: #fafafa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            flex-shrink: 0;
+        .active-stage-btn {
+            background-color: #FFB5B5 !important;
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0px #4A3E3D !important;
         }
-
-        .card-image-right img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        /* Custom Scrollbar for cartoon aesthetic */
+        ::-webkit-scrollbar {
+            width: 12px;
         }
-
-        .time-badge {
-            display: inline-flex; align-items: center; background: #f1f2f6;
-            color: #57606f; padding: 4px 8px; border-radius: 6px;
-            font-size: 0.75rem; font-weight: 600; margin-bottom: 8px;
-            align-self: flex-start;
+        ::-webkit-scrollbar-track {
+            background: #FAF6EE;
+            border-left: 3px solid #4A3E3D;
         }
-
-        .card h3 { font-size: 1.05rem; margin: 0 0 6px 0; line-height: 1.35; color: var(--text-main); }
-        .card p { font-size: 0.85rem; color: var(--text-light); margin: 0 0 10px 0; line-height: 1.4; }
-
-        .tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
-        .tag { font-size: 0.65rem; padding: 3px 6px; background: #f1f2f6; color: #57606f; border-radius: 4px; }
-        .tag.michelin { background: #ffeae6; color: #d32f2f; font-weight: 600; }
-
-        .action-row { display: flex; gap: 8px; margin-top: auto; }
-        .btn-map {
-            flex: 1; display: flex; align-items: center; justify-content: center;
-            background: #f1f8ff; color: #007aff; border: none; padding: 8px 10px;
-            border-radius: 8px; font-size: 0.8rem; font-weight: 600; text-decoration: none;
-            white-space: nowrap;
+        ::-webkit-scrollbar-thumb {
+            background-color: #FFD2D2;
+            border-radius: 10px;
+            border: 3px solid #4A3E3D;
         }
-        .btn-map svg { width: 14px; height: 14px; margin-right: 4px; fill: currentColor; }
-
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
-            background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 15px; padding-bottom: env(safe-area-inset-bottom); z-index: 1001;
+        /* Cloud Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(-8px) translateX(5px); }
+            100% { transform: translateY(0px) translateX(0px); }
         }
-
-        .nav-date {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 56px; border-radius: 12px; background: transparent; border: none;
-            margin: 0 3px; transition: all 0.2s ease; cursor: pointer;
+        .floating-cloud {
+            animation: float 4s ease-in-out infinite;
         }
-
-        .nav-date-num { font-size: 1.1rem; font-weight: 700; color: #95a5a6; line-height: 1.1; }
-        .nav-date-day { font-size: 0.65rem; font-weight: 600; color: #bdc3c7; text-transform: uppercase; margin-top: 2px; }
-
-        .nav-date.active { background: #fff3e0; transform: translateY(-2px); }
-        .nav-date.active .nav-date-num { color: var(--primary-color); }
-        .nav-date.active .nav-date-day { color: var(--secondary-color); }
-
-        .highlight { color: var(--primary-color); font-weight: 600; }
-
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        @media (min-width: 601px) {
-            .container { max-width: 800px; }
-            .bottom-nav { max-width: 600px; left: 50%; transform: translateX(-50%); border-radius: 20px 20px 0 0; border: 1px solid rgba(0,0,0,0.08); border-bottom: none; padding: 0 25px; }
-            .app-header { padding: 0 calc(50% - 400px + 20px); }
-            .card-image-right { width: 140px; }
+        .floating-cloud-delayed {
+            animation: float 5s ease-in-out infinite 1.5s;
+        }
+        /* Pulse scale animation for interactive landmarks */
+        @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+        .pulsing-icon {
+            animation: pulse-scale 2s infinite ease-in-out;
+            transform-origin: center;
+        }
+        /* Train path transition */
+        #ktx-train {
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
-<body>
-<header class="app-header">
-<div class="header-left">
-<h1 id="header-title">Day 1｜抵達檳城</h1>
-<p>Penang Trip 2025</p>
-</div>
-<div class="weather-widget">
-<div class="weather-icon">⛅</div>
-<div class="weather-info">
-<span class="temp">29°C</span>
-<span class="location">PENANG</span>
-</div>
-</div>
-</header>
-<div class="container">
-<!-- Day 1 -->
-<div class="day-view active" id="view-day1">
-<div class="section-header">
-<div class="section-title">抵達檳城</div>
-<div class="section-desc">Day 1｜探索夜市美食</div>
-</div>
-<div class="card flight">
-<div class="card-content">
-<span class="time-badge">15:45</span>
-<h3>抵達檳城機場</h3>
-<p>HK Express <span class="highlight">UO746</span><br/>HKG 11:55 → PEN 15:45</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Penang+International+Airport&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
-                        導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Airplane" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/564ba747-5926-466e-9ef2-472d46f66d0e.png"/>
-</div>
-</div><div class="card" style="border-left-color: #f48c06;"><div class="card-content"><span class="time-badge">17:00</span><h3>Citadines Connect Bertam Georgetown</h3><p style="color: #7f8c8d; font-size: 0.85rem; margin-bottom: 5px;">📍 No. 428, Jalan Penang, 10000 George Town</p><p>辦理入住手續，放下行李稍作休息。</p><div class="action-row"><a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Citadines+Connect+Bertam+Georgetown+Penang" target="_blank"><svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg> 導航</a></div></div><div class="card-image-right"><img alt="Hotel Sketch" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/0d4c08fc-d539-4987-a003-1325b2ae0211.png"/></div></div>
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">晚餐</span>
-<h3>紐冷街夜市</h3>
-<p>碳燒海鮮炒粿條、沙嗲。</p>
-<div class="tags-row"><span class="tag">地道</span><span class="tag">夜市</span></div>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=New+Lane+Street+Food+Stalls+Penang&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Char Kway Teow" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/a136b5e3-8847-4e46-8830-254510f36be6.png"/>
-</div>
-</div>
-</div>
-<!-- Day 2 -->
-<div class="day-view" id="view-day2">
-<div class="section-header">
-<div class="section-title">喬治市古蹟</div>
-<div class="section-desc">Day 2｜文化與娘惹菜</div>
-</div>
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">早餐</span>
-<h3>多春茶座</h3>
-<p>炭烤牛油咖椰吐司、半熟蛋。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Toh+Soon+Cafe&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Kaya Toast" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/d1019600-32ba-4548-a789-60ec2d1a906d.png"/>
-</div>
-</div>
-<div class="card">
-<div class="card-content">
-<span class="time-badge">上午</span>
-<h3>喬治市散策</h3>
-<p>壁畫、博物館、文具店。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Penang+Street+Art&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>起點
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Murals" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/27e86c28-1027-477d-843a-28aa17e291e5.png"/>
-</div>
-</div>
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">午餐</span>
-<h3>Auntie Gaik Lean's</h3>
-<p>正宗娘惹菜，必試娘惹小金杯 (Kueh Pie Tee)。</p>
-<div class="tags-row"><span class="tag michelin">米其林</span></div>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Auntie+Gaik+Lean's+Old+School+Eatery&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Kueh Pie Tee" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/030d555c-b1e6-40b5-85cf-0bfb7b83556c.png"/>
-</div>
-</div>
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">晚餐</span>
-<h3>德成飯店</h3>
-<p>招牌火肉（燒肉）。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Tek+Sen+Restaurant&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Roasted Pork" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/65f34727-888c-4ed6-b8a8-a27307d12284.png"/>
-</div>
-</div>
-</div>
-<!-- Day 3 -->
-<div class="day-view" id="view-day3">
-<div class="section-header">
-升旗山與夜市
-Day 3｜文創與傳統
-</div>
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">早餐</span>
-<h3>七條路巴剎</h3>
-<p>鴨肉粿條湯、雲吞麵。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Cecil+Street+Market&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Market Food" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/a136b5e3-8847-4e46-8830-254510f36be6.png"/>
-</div>
-</div><div class="card">
-<div class="card-content">
-<span class="time-badge">09:00</span>
-<h3>升旗山</h3>
-<p>搭乘纜車觀光。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Penang+Hill+Lower+Station&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>纜車站
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Penang Hill Train" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/61b24289-83cb-44f4-b125-8a4b37e2b1be.png"/>
-</div>
-</div>
+<body class="p-3 md:p-6 overflow-x-hidden">
 
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">午餐</span>
-<h3>橋頭福建麵</h3>
-<p>濃郁蝦湯福建麵。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Bridge+Street+Hokkien+Mee&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Noodles" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/0aa1d638-c400-4c4c-8f3e-e84aa8c22322.png"/>
-</div>
-</div>
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">晚餐</span>
-<h3>汕頭街夜市</h3>
-<p>鴨粥粿汁、四果湯。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Kimberley+Street+Food+Night+Market&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Street Food" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/a136b5e3-8847-4e46-8830-254510f36be6.png"/>
-</div>
-</div>
-</div>
-<!-- Day 4 -->
-<div class="day-view" id="view-day4">
-<div class="section-header">
-文創市集與美食
-Day 4｜米其林與纜車
-</div>
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">早餐</span>
-<h3>Hot Bowl White Curry</h3>
-<p>白咖哩麵、白斬雞。</p>
-<div class="tags-row"><span class="tag michelin">必比登</span></div>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Hot+Bowl+White+Curry+Mee&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="White Curry Mee" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/0aa1d638-c400-4c4c-8f3e-e84aa8c22322.png"/>
-</div>
-</div><div class="card">
-<div class="card-content">
-<span class="time-badge">11:00</span>
-<h3>Hin Market</h3>
-<p>週末限定文創市集。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Hin+Bus+Depot&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<!-- 這裡換上了新生成的 Hin Bus Depot 紅磚牆市集插圖 -->
-<img alt="Hin Bus Depot Art Market" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/b8a32436-5b47-4bfa-8381-b5fd9a0a6ce6.png"/>
-</div>
-</div>
+    <!-- Cute Header Section -->
+    <header class="max-w-7xl mx-auto mb-8 relative">
+        <!-- Floating Cartoon Clouds in background -->
+        <div class="absolute -top-4 left-10 w-16 h-10 bg-white opacity-80 rounded-full floating-cloud pointer-events-none before:content-[''] before:absolute before:bg-white before:w-10 before:h-10 before:rounded-full before:-top-4 before:left-3"></div>
+        <div class="absolute top-20 right-10 w-20 h-12 bg-white opacity-80 rounded-full floating-cloud-delayed pointer-events-none before:content-[''] before:absolute before:bg-white before:w-12 before:h-12 before:rounded-full before:-top-5 before:left-4"></div>
 
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">午餐</span>
-<h3>砂煲肉骨茶</h3>
-<p>明記肉骨茶與羅記鴨肉。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Ming+Qi+Claypot+Bak+Kut+Teh&amp;hl=zh-HK" target="_blank">📍肉骨茶</a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Bak Kut Teh" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/35ac808d-215f-40ef-ae0e-a9453dd1d90d.png"/>
-</div>
-</div>
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">19:00</span>
-<h3>Gēn 根</h3>
-<p>現代亞洲創意料理。<span style="color: #e85d04; font-weight: bold; margin-left: 5px;">(已訂座)</span></p>
-<div class="tags-row"><span class="tag michelin">米其林</span></div>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Communal+Table+by+Gen&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Modern Asian Food" src="https://user-gen-media-assets.s3.amazonaws.com/gemini_images/2d4657ec-6913-4f43-8499-45bf8c5076df.png"/>
-</div>
-</div>
-</div>
-<!-- Day 5 -->
-<div class="day-view" id="view-day5">
-<div class="section-header">
-<div class="section-title">返程日</div>
-<div class="section-desc">Day 5｜最後回味</div>
-</div>
-<div class="card food">
-<div class="card-content">
-<span class="time-badge">早餐</span>
-<h3>檳榔律馳名叻沙</h3>
-<p>最後回味：亞參叻沙。</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Penang+Road+Famous+Laksa&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>導航
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Assam Laksa" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/b6b3025e-13e2-47d3-997b-f42d53d80f14.png"/>
-</div>
-</div>
-<div class="card flight">
-<div class="card-content">
-<span class="time-badge">16:30</span>
-<h3>返程</h3>
-<p>HK Express <span class="highlight">UO787</span><br/>PEN → HKG</p>
-<div class="action-row">
-<a class="btn-map" href="https://www.google.com/maps/search/?api=1&amp;query=Penang+International+Airport&amp;hl=zh-HK" target="_blank">
-<svg viewbox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>機場
-                    </a>
-</div>
-</div>
-<div class="card-image-right">
-<img alt="Airplane" src="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/564ba747-5926-466e-9ef2-472d46f66d0e.png"/>
-</div>
-</div>
-</div>
-</div>
-<!-- Date Navigation Bar -->
-<nav class="bottom-nav">
-<button class="nav-date active" onclick="switchTab('day1', 'Day 1｜抵達檳城')">
-<span class="nav-date-num">14</span>
-<span class="nav-date-day">WED</span>
-</button>
-<button class="nav-date" onclick="switchTab('day2', 'Day 2｜升旗山')">
-<span class="nav-date-num">15</span>
-<span class="nav-date-day">THU</span>
-</button>
-<button class="nav-date" onclick="switchTab('day3', 'Day 3｜喬治市')">
-<span class="nav-date-num">16</span>
-<span class="nav-date-day">FRI</span>
-</button>
-<button class="nav-date" onclick="switchTab('day4', 'Day 4｜市集')">
-<span class="nav-date-num">17</span>
-<span class="nav-date-day">SAT</span>
-</button>
-<button class="nav-date" onclick="switchTab('day5', 'Day 5｜返程')">
-<span class="nav-date-num">18</span>
-<span class="nav-date-day">SUN</span>
-</button>
-</nav>
-<script>
-    function switchTab(viewId, title) {
-        const buttons = document.querySelectorAll('.nav-date');
-        buttons.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.getAttribute('onclick').includes(viewId)) {
-                btn.classList.add('active');
+        <div class="cartoon-card bg-[#FFF3E3] p-6 text-center relative overflow-hidden">
+            <!-- Decorative Korea Icons inside header -->
+            <div class="absolute -left-4 -bottom-4 text-7xl opacity-10 select-none">🇰🇷</div>
+            <div class="absolute -right-4 -top-4 text-7xl opacity-10 select-none">🚗</div>
+            
+            <span class="inline-block bg-[#FF7E7E] text-white text-xs md:text-sm font-bold px-4 py-1.5 rounded-full border-2 border-[#4A3E3D] mb-3 shadow-[2px_2px_0px_#4A3E3D]">
+                ✨ SEOUL & GYEONGJU AUTOTRIP 9D8N ✨
+            </span>
+            <h1 class="text-3xl md:text-5xl font-black tracking-wider text-[#4A3E3D] mb-3 flex items-center justify-center gap-2">
+                <span>韓國雙城自駕</span>
+                <span class="text-[#FF7E7E]">極致卡通玩樂冊</span>
+                <span>🗺️</span>
+            </h1>
+            <p class="text-sm md:text-base text-[#705E5C] max-w-2xl mx-auto font-medium">
+                已根據最新 CSV 完美同步：弘大白湯排骨鍋、買豆名店 Anthracite/Tailor/Fritz ☕，以及皇理團路<b class="text-[#FF7E7E]">「熟成紅柿雪葩」</b>自駕大冒險！
+            </p>
+
+            <!-- Overall Trip Progress Bar -->
+            <div class="max-w-md mx-auto mt-6 bg-white border-3 border-[#4A3E3D] h-7 rounded-full overflow-hidden p-0.5 relative shadow-[3px_3px_0px_#4A3E3D]">
+                <div id="overall-progress" class="bg-[#A4E0B0] h-full rounded-full transition-all duration-500 flex items-center justify-end pr-3" style="width: 0%;">
+                    <span class="text-xs font-bold text-[#4A3E3D] select-none" id="progress-text">0% Done</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- LEFT COLUMN: Sticky Interactive Map & Mascot Panel -->
+        <div class="lg:col-span-5 lg:sticky lg:top-6 flex flex-col gap-6">
+            
+            <!-- Stage Selector Tabs -->
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="switchStage(1)" id="btn-stage-1" class="cartoon-btn py-2 px-1 text-xs md:text-sm font-black rounded-xl bg-[#E8EDFF] active-stage-btn">
+                    1️⃣ 首爾週末
+                </button>
+                <button onclick="switchStage(2)" id="btn-stage-2" class="cartoon-btn py-2 px-1 text-xs md:text-sm font-black rounded-xl bg-[#FFEFE5]">
+                    2️⃣ 慶州自駕
+                </button>
+                <button onclick="switchStage(3)" id="btn-stage-3" class="cartoon-btn py-2 px-1 text-xs md:text-sm font-black rounded-xl bg-[#E0F7F6]">
+                    3️⃣ 回程預辦
+                </button>
+            </div>
+
+            <!-- The Cute Interactive Map Board -->
+            <div class="cartoon-card bg-[#E4F2FE] p-4 relative overflow-hidden" style="min-height: 380px;">
+                <div class="absolute top-2 left-3 bg-[#FFF9E6] border-2 border-[#4A3E3D] rounded-lg px-2 py-1 text-xs font-bold shadow-[2px_2px_0px_#4A3E3D] z-10">
+                    📍 萌萌自駕地圖
+                </div>
+                
+                <!-- SVG Cartoon South Korea Map -->
+                <svg viewBox="0 0 400 400" class="w-full h-auto max-h-[350px] mx-auto drop-shadow-[0_8px_16px_rgba(0,0,0,0.1)]">
+                    <!-- Sea decorations -->
+                    <path d="M 40,300 Q 60,290 80,300 T 120,300" fill="none" stroke="#A9D4FF" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 320,80 Q 340,70 360,80 T 400,80" fill="none" stroke="#A9D4FF" stroke-width="3" stroke-linecap="round"/>
+                    
+                    <!-- Simplified cute Korea map background -->
+                    <path d="M 120,40 
+                             C 150,35 220,50 250,70 
+                             C 280,90 270,160 300,200 
+                             C 330,240 370,260 350,310 
+                             C 330,350 240,370 200,380 
+                             C 160,390 120,350 110,320 
+                             C 100,290 80,270 90,220 
+                             C 100,170 80,120 90,80 
+                             Z" 
+                          fill="#FFFDF4" stroke="#4A3E3D" stroke-width="4" stroke-linejoin="round" />
+
+                    <!-- KTX Train Tracks (Dotted Line) -->
+                    <path id="ktx-track" d="M 150,110 Q 210,210 290,280" fill="none" stroke="#FFACAC" stroke-width="3" stroke-dasharray="6,6" stroke-linecap="round" />
+                    
+                    <!-- Cute KTX Train Icon (Group that animates) -->
+                    <g id="ktx-train" transform="translate(150, 110)">
+                        <rect x="-16" y="-8" width="32" height="16" rx="8" fill="#5D8FFF" stroke="#4A3E3D" stroke-width="2.5" />
+                        <polygon points="10,-6 16,0 10,6" fill="#FFFFFF" stroke="#4A3E3D" stroke-width="1.5" />
+                        <circle cx="-6" cy="4" r="2.5" fill="#4A3E3D" />
+                        <circle cx="6" cy="4" r="2.5" fill="#4A3E3D" />
+                        <text x="0" y="2" font-size="7" font-weight="bold" fill="white" text-anchor="middle">KTX</text>
+                    </g>
+
+                    <!-- Interactive Landmark Markers -->
+                    
+                    <!-- SEOUL -->
+                    <g class="cursor-pointer" onclick="scrollToDay(1)">
+                        <circle cx="150" cy="110" r="14" fill="#E8EDFF" stroke="#4A3E3D" stroke-width="2.5" />
+                        <path d="M 150,94 L 150,118 M 145,102 L 155,102 M 147,97 L 153,97" stroke="#FF7A7A" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="150" cy="94" r="2.5" fill="#FF4F4F" />
+                        <rect x="110" y="125" width="80" height="18" rx="6" fill="#E8EDFF" stroke="#4A3E3D" stroke-width="2" />
+                        <text x="150" y="137" font-size="10" font-weight="bold" fill="#4A3E3D" text-anchor="middle">首爾 Seoul</text>
+                    </g>
+
+                    <!-- DAEGU -->
+                    <g class="cursor-pointer" onclick="scrollToDay(7)">
+                        <circle cx="250" cy="280" r="14" fill="#FFFBEA" stroke="#4A3E3D" stroke-width="2.5" />
+                        <circle cx="250" cy="280" r="8" fill="none" stroke="#FFD043" stroke-width="2" />
+                        <line x1="250" y1="280" x2="250" y2="292" stroke="#4A3E3D" stroke-width="2" />
+                        <rect x="210" y="298" width="80" height="18" rx="6" fill="#FFFBEA" stroke="#4A3E3D" stroke-width="2" />
+                        <text x="250" y="310" font-size="10" font-weight="bold" fill="#4A3E3D" text-anchor="middle">大邱 Daegu</text>
+                    </g>
+
+                    <!-- GYEONGJU -->
+                    <g class="cursor-pointer" onclick="scrollToDay(4)">
+                        <path d="M 270,285 Q 290,265 310,285 Z" fill="#9CE6A1" stroke="#4A3E3D" stroke-width="2" />
+                        <circle cx="290" cy="280" r="14" fill="#FFEFE5" stroke="#4A3E3D" stroke-width="2.5" class="pulsing-icon" />
+                        <path d="M 285,278 C 285,274 295,274 295,278 C 295,284 285,284 285,278 Z" fill="#FF833E" />
+                        <path d="M 288,274 Q 290,270 292,274" fill="none" stroke="#40A040" stroke-width="1.5" />
+                        <rect x="255" y="195" width="80" height="18" rx="6" fill="#FFEFE5" stroke="#4A3E3D" stroke-width="2" />
+                        <text x="295" y="207" font-size="10" font-weight="bold" fill="#4A3E3D" text-anchor="middle">慶州 Gyeongju</text>
+                    </g>
+
+                    <!-- POHANG -->
+                    <g class="cursor-pointer" onclick="scrollToDay(6)">
+                        <circle cx="330" cy="250" r="14" fill="#E0F7F6" stroke="#4A3E3D" stroke-width="2.5" />
+                        <path d="M 326,256 L 326,245 M 329,256 L 329,243 M 332,256 L 332,243 M 335,256 L 335,247" stroke="#4DB6AC" stroke-width="2" stroke-linecap="round"/>
+                        <rect x="315" y="155" width="80" height="18" rx="6" fill="#E0F7F6" stroke="#4A3E3D" stroke-width="2" />
+                        <text x="355" y="167" font-size="10" font-weight="bold" fill="#4A3E3D" text-anchor="middle">浦項 Pohang</text>
+                    </g>
+                </svg>
+            </div>
+
+            <!-- Mascot Section -->
+            <div class="cartoon-card bg-[#FFF3E3] p-5 flex items-start gap-4 relative overflow-hidden">
+                <div class="w-20 h-20 flex-shrink-0 bg-[#FFAC75] border-3 border-[#4A3E3D] rounded-full relative overflow-hidden flex items-center justify-center shadow-[2px_2px_0px_#4A3E3D]">
+                    <div class="absolute w-5 h-5 bg-[#FFAC75] border-2 border-[#4A3E3D] rounded-full -top-1 -left-1"></div>
+                    <div class="absolute w-5 h-5 bg-[#FFAC75] border-2 border-[#4A3E3D] rounded-full -top-1 -right-1"></div>
+                    <path d="M 40,15 Q 40,2 45,10" fill="none" stroke="#2D8A4E" stroke-width="3" class="absolute top-0" />
+                    <div class="w-12 h-12 flex flex-col justify-center items-center mt-2">
+                        <div class="flex gap-3 mb-1">
+                            <span class="w-2 h-2 bg-[#4A3E3D] rounded-full"></span>
+                            <span class="w-2 h-2 bg-[#4A3E3D] rounded-full"></span>
+                        </div>
+                        <div class="w-4 h-2.5 bg-[#FFF0E2] border border-[#4A3E3D] rounded-full flex items-center justify-center">
+                            <div class="w-1 h-1 bg-[#4A3E3D] rounded-full"></div>
+                        </div>
+                        <div class="absolute flex gap-7 top-10">
+                            <span class="w-2 h-1.5 bg-[#FF8B8B] rounded-full opacity-60"></span>
+                            <span class="w-2 h-1.5 bg-[#FF8B8B] rounded-full opacity-60"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speech Bubble Box -->
+                <div class="flex-1">
+                    <div class="relative bg-white border-3 border-[#4A3E3D] p-3 rounded-2xl shadow-[2px_2px_0px_#4A3E3D] before:content-[''] before:absolute before:border-r-[12px] before:border-r-white before:border-y-[8px] before:border-y-transparent before:-left-3 before:top-6 before:z-10 after:content-[''] after:absolute after:border-r-[15px] after:border-r-[#4A3E3D] after:border-y-[10px] after:border-y-transparent after:-left-4.5 after:top-5.5">
+                        <p class="text-xs font-black text-[#FF6F3D] mb-1">🐻 柿子熊 KOKO 帶路：</p>
+                        <p id="mascot-speech" class="text-xs md:text-sm leading-relaxed text-[#5C4D4C] font-bold">
+                            歡迎黎到全新同步嘅韓國雙城之旅！點擊右邊行程，我會話你知一啲地道嘅廣東話秘訣同溫馨提示㗎！
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Utilities Panel -->
+            <div class="cartoon-card bg-[#F4F1EA] p-4 text-xs font-bold flex flex-col gap-2">
+                <div class="flex justify-between items-center">
+                    <span>📅 行程日期：</span>
+                    <span class="bg-[#4A3E3D] text-white px-2.5 py-1 rounded-full text-[11px]">11/27 - 12/05</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>🚗 租車地點：</span>
+                    <span class="bg-[#FFAA00] text-[#4A3E3D] px-2.5 py-1 rounded-full text-[11px] border border-[#4A3E3D]">新慶州站取還</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span>✈ 班機資訊：</span>
+                    <span class="bg-[#5D8FFF] text-white px-2.5 py-1 rounded-full text-[11px]">大韓航空 KE2011</span>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- RIGHT COLUMN: Timeline Details (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+
+            <!-- STAGE 1 TIMELINE CARDS -->
+            <div id="timeline-stage-1" class="timeline-stage-group flex flex-col gap-6">
+                <div class="text-xl font-black bg-[#E8EDFF] border-3 border-[#4A3E3D] px-4 py-2 rounded-2xl inline-block shadow-[3px_3px_0px_#4A3E3D]">
+                    🌸 第一階段：首爾週末美食與極致買豆 (11/27 - 11/30)
+                </div>
+
+                <!-- DAY 1 -->
+                <div id="day-1" class="day-card cartoon-card p-5 border-l-[12px] border-l-[#A5C1FF]" onclick="setActiveDay(1)">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <span class="bg-[#A5C1FF] text-[#1E3B70] text-xs font-black px-3 py-1 rounded-full border-2 border-[#4A3E3D]">
+                            DAY 1 ➔ 11 月 27 日（五）
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">📍 抵達首爾 ➔ 弘大老饕晚餐</span>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-[#1E3B70] mb-3">
+                        入住弘大 Airbnb ＆ 狂啖老饕白湯排骨鍋 🍲
+                    </h3>
+                    
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>降落仁川與入住：</b> 飛抵仁川後前往弘大2號出口，辦理 Airbnb 入住手續。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>永東薯仔排骨鍋 (영동감자탕)🥘：</b> 在地老老饕私藏，極致濃郁的獨門白湯排骨鍋，行路只需2分鐘！
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- DAY 2 -->
+                <div id="day-2" class="day-card cartoon-card p-5 border-l-[12px] border-l-[#A5C1FF]" onclick="setActiveDay(2)">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <span class="bg-[#A5C1FF] text-[#1E3B70] text-xs font-black px-3 py-1 rounded-full border-2 border-[#4A3E3D]">
+                            DAY 2 ➔ 11 月 28 日（六）
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">📍 望遠市場 ➔ 弘大核心買豆 ➔ 意式名廚</span>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-[#1E3B70] mb-3">
+                        望遠市場掃街 ＆ 弘大極致精品咖啡買豆 🛍️
+                    </h3>
+                    
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>望遠市場小食 ➜ Anthracite 西橋店☕：</b> 10:00開門。市場熱烈掃街後，直達隔壁大宅風咖啡，喝手沖兼朝聖精緻單品咖啡豆！
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>Udon Kaden (우동카덴)：</b> 延禧店。神級日式彈牙烏冬，主廚鄭鎬泳名店！
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>Tailor Coffee 西橋店☕：</b> 弘大精品咖啡始祖！高評價、位於核心商圈內，一邊行街一邊買精美咖啡豆。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>Osteria Sam Kim🍝：</b> 預約延南洞名廚 Sam Kim 的主打店，享受高質感意式生麵意粉與浪漫氛圍。
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- DAY 3 -->
+                <div id="day-3" class="day-card cartoon-card p-5 border-l-[12px] border-l-[#A5C1FF]" onclick="setActiveDay(3)">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <span class="bg-[#A5C1FF] text-[#1E3B70] text-xs font-black px-3 py-1 rounded-full border-2 border-[#4A3E3D]">
+                            DAY 3 ➔ 11 月 29 日（日）
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">📍 安國 ➜ 德壽宮 ➜ 京東市場 ➜ 光化門</span>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-[#1E3B70] mb-3">
+                        安國排隊鹽麵包 ＆ 傳奇 Fritz 桃花店買豆 ☕
+                    </h3>
+                    
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>Artist Bakery (安國店) ⏰ 08:00開：</b> 超人氣排隊神店，狂啃外酥內軟的鹹味鹽麵包！隨後漫步安國與德壽宮石牆路。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>安東家 手工刀削麵 (안동집 손칼국시)🥬：</b> 京東市場老字號，品嚐極濃豆香的手工刀削麵，<b>白菜煎餅必點！</b>
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>Fritz Coffee 桃花店☕：</b> 精品咖啡界的大神殿！買標誌性包裝咖啡豆，順便打卡古典韓屋麵包房。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>Doughroom 光化門店🍝：</b> 位於 SFC 地庫 B1 樓，點一盤香濃大蒜黃油手工生麵，為首爾週末完美收尾。
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STAGE 2 TIMELINE CARDS -->
+            <div id="timeline-stage-2" class="timeline-stage-group flex flex-col gap-6">
+                <div class="text-xl font-black bg-[#FFEFE5] border-3 border-[#4A3E3D] px-4 py-2 rounded-2xl inline-block shadow-[3px_3px_0px_#4A3E3D] mt-4">
+                    🚗 第二階段：移師慶州 ➔ 普門湖基地與雙城自駕遊 (11/30 - 12/05)
+                </div>
+
+                <!-- DAY 4 -->
+                <div id="day-4" class="day-card cartoon-card p-5 border-l-[12px] border-l-[#FF8A3D]" onclick="setActiveDay(4)">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <span class="bg-[#FFEFE5] text-[#A03D00] text-xs font-black px-3 py-1 rounded-full border-2 border-[#4A3E3D]">
+                            DAY 4 ➔ 11 月 30 日（一）
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">📍 KTX 移師 ➔ 自駕起錨 ➔ 熟成紅柿雪葩 🍧</span>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-[#A03D00] mb-3">
+                        慶州自駕首航 ＆ 皇理團路紅柿雪葩 🍧
+                    </h3>
+                    
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>延南洞 KTX 啟程：</b> 早上在延南洞 Fave Bakery 享用精緻可頌咖啡，隨後搭乘 11:00 前往慶州的 KTX 列車。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>13:02 新慶州站取車：</b> 30分鐘直奔普門湖 LAHAN SELECT 飯店 Check-in 散步。
+                            </span>
+                        </label>
+                        
+                        <!-- PERSIMMON HIGHLIGHT -->
+                        <div class="bg-[#FFF4EB] border-3 border-[#FF8D4F] rounded-2xl p-4 shadow-[2px_2px_0px_#FF8D4F] relative overflow-hidden">
+                            <div class="absolute -right-4 -bottom-4 text-5xl opacity-20 rotate-12">🍧</div>
+                            <h4 class="text-sm font-black text-[#E05300] mb-1.5 flex items-center gap-1.5">
+                                🌟 皇理團路必朝聖：熟成紅柿雪葩
+                            </h4>
+                            <p class="text-xs md:text-sm text-[#4A3E3D] leading-relaxed">
+                                開車前往充滿韓屋風情的皇理團路，探訪 <b>「Fe訂」</b> 或 <b>「Café 洪柿」</b>，享用11月當季成熟、口感綿密如冰淇淋的 <b>原隻熟成紅柿雪葩 (Ice Hongsi)</b>，配上熱烘烘的烤年糕！
+                            </p>
+                        </div>
+
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>18:00 東宮與月池夜景：</b> 欣賞夢幻的水面倒影，感受慶州千年的璀璨古夜景。
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- DAY 5 -->
+                <div id="day-5" class="day-card cartoon-card p-5 border-l-[12px] border-l-[#FF8A3D]" onclick="setActiveDay(5)">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <span class="bg-[#FFEFE5] text-[#A03D00] text-xs font-black px-3 py-1 rounded-full border-2 border-[#4A3E3D]">
+                            DAY 5 ➔ 12 月 01 日（二）
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">📍 慶州千年世界文化遺產</span>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-[#A03D00] mb-3">
+                        慶州世界遺產深度遊 🏺
+                    </h3>
+                    
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>佛國寺 & 石窟庵：</b> 清晨自駕出發，避開旅行團，靜聽森林裡的千年晨鐘。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>大陵苑 (天馬塚) ＆ 瞻星台：</b> 漫步在巨大的圓形綠色草丘中，並打卡最古老的天文台。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>月精橋日落點燈🌉：</b> 欣賞宏偉的木質廊橋點燈，倒影與河水相映成趣。
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- DAY 6 -->
+                <div id="day-6" class="day-card cartoon-card p-5 border-l-[12px] border-l-[#FF8A3D]" onclick="setActiveDay(6)">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <span class="bg-[#FFEFE5] text-[#A03D00] text-xs font-black px-3 py-1 rounded-full border-2 border-[#4A3E3D]">
+                            DAY 6 ➔ 12 月 02 日（三）
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">📍 浦項一日自駕（單程 50 分鐘）</span>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-[#A03D00] mb-3">
+                        浦項 Space Walk 鋼鐵過山車 🎢
+                    </h3>
+                    
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>挑戰「Space Walk」：</b> 驚險漫步於空中鋼鐵軌道，俯瞰浦項迎日灣震驚視覺的海景！
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>竹島市場海鮮餐🐟：</b> 大嚼現切肥美刺身，品嚐當地的名物「水生魚片 (Mulhoe)」。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>九龍浦日本家屋路 / 虎尾岬：</b> 打卡《山茶花開時》景點與矗立海中的傳奇「相生之手」。
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- DAY 7 -->
+                <div id="day-7" class="day-card cartoon-card p-5 border-l-[12px] border-l-[#FF8A3D]" onclick="setActiveDay(7)">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <span class="bg-[#FFEFE5] text-[#A03D00] text-xs font-black px-3 py-1 rounded-full border-2 border-[#4A3E3D]">
+                            DAY 7 ➔ 12 月 03 日（四）
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">📍 大邱一日自駕（單程 1 小時 15 分鐘）</span>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-[#A03D00] mb-3">
+                        大邱近代散策 ＆ 西門市場扁餃子 🥟
+                    </h3>
+                    
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>金光石路 ＆ 近代胡同：</b> 慢步壁畫長廊，聽著經典的浪漫民謠。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>西門市場扁餃子🥟：</b> 必點煎到金黃酥脆的扁餃子與香辣刀切麵，極地道！
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>前山展望台夜景：</b> 開車前往並步行登上觀景台，俯瞰360度繁華的大邱都市夜海。
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- DAY 8 -->
+                <div id="day-8" class="day-card cartoon-card p-5 border-l-[12px] border-l-[#FF8A3D]" onclick="setActiveDay(8)">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <span class="bg-[#FFEFE5] text-[#A03D00] text-xs font-black px-3 py-1 rounded-full border-2 border-[#4A3E3D]">
+                            DAY 8 ➔ 12 月 04 日（五）
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">📍 大邱二刷 或 慶州隨心自駕</span>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-[#A03D00] mb-3">
+                        雙城隨心選：大邱樂園 🎡 或 慶州慢活 🌾
+                    </h3>
+                    
+                    <div class="bg-white border-2 border-[#E0D8C8] rounded-xl p-3 flex flex-col gap-3">
+                        <div>
+                            <span class="bg-[#FFD2D2] text-[#801010] text-[10px] font-black px-2 py-0.5 rounded-full border border-[#4A3E3D]">
+                                方案 A：活力四射派
+                            </span>
+                            <p class="text-xs text-[#4A3E3D] mt-1">
+                                自駕直奔大邱 <b>E-World ＆ 83 塔</b>，瘋狂挑戰刺激極限的機動遊戲！
+                            </p>
+                        </div>
+                        <hr class="border-[#4A3E3D] border-dashed">
+                        <div>
+                            <span class="bg-[#D2F1FF] text-[#105080] text-[10px] font-black px-2 py-0.5 rounded-full border border-[#4A3E3D]">
+                                方案 B：悠閒漫活派
+                            </span>
+                            <p class="text-xs text-[#4A3E3D] mt-1">
+                                輕鬆留在慶州普門湖畔放空，逛逛 <b>校村傳統村落</b>，自駕悠閒享受最後假期。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STAGE 3 TIMELINE CARDS -->
+            <div id="timeline-stage-3" class="timeline-stage-group flex flex-col gap-6">
+                <div class="text-xl font-black bg-[#E0F7F6] border-3 border-[#4A3E3D] px-4 py-2 rounded-2xl inline-block shadow-[3px_3px_0px_#4A3E3D] mt-4">
+                    ✈️ 第三階段：完美還車與市區預辦登機 (12/05 星期六)
+                </div>
+
+                <!-- DAY 9 -->
+                <div id="day-9" class="day-card cartoon-card p-5 border-l-[12px] border-l-[#00BFA5]" onclick="setActiveDay(9)">
+                    <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                        <span class="bg-[#E0F7F6] text-[#006054] text-xs font-black px-3 py-1 rounded-full border-2 border-[#4A3E3D]">
+                            DAY 9 ➔ 12 月 05 日（六）
+                        </span>
+                        <span class="text-xs text-gray-500 font-bold">📍 慶州 ➔ 首爾站 ➔ 仁川 T2 ➔ 回港</span>
+                    </div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-[#006054] mb-3">
+                        兩手空空：首爾站城市機場完美攻略 ⚡
+                    </h3>
+                    
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>11:00 前 新慶州站還車：</b> 飯店 check-out 後，開車回新慶州站辦理還車手續。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>12:00 - 14:15 搭乘 KTX：</b> 搭 KTX 快速返回首爾站。
+                            </span>
+                        </label>
+                        
+                        <!-- HIGH IMPORTANT FLOWCHART -->
+                        <div class="bg-[#E0F2F1] border-3 border-[#009688] rounded-2xl p-4 shadow-[2px_2px_0px_#009688]">
+                            <h4 class="text-sm font-black text-[#00796B] mb-2 flex items-center gap-1">
+                                🔑 兩手空空絕技：首爾站 B2 城市機場客運站
+                            </h4>
+                            <ol class="text-xs md:text-sm text-[#4A3E3D] list-decimal pl-4 space-y-1.5 font-bold">
+                                <li>必須在 14:15 - 15:15 抵達首爾站 B2。</li>
+                                <li>憑大韓航空機票（20:00 起飛）和 AREX 車票，直接完成<b>行李托運、登機、出境蓋章</b>。</li>
+                                <li>直接空手，大件行李已直送機場！</li>
+                            </ol>
+                        </div>
+
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>樂天超市 ＆ 芝麻拿鐵：</b> 兩手空空行樂天超市買齊最後手信，在「延南磨坊」享用招牌芝麻拿鐵。
+                            </span>
+                        </label>
+                        <label class="flex items-start gap-2.5 cursor-pointer p-1.5 rounded-lg hover:bg-gray-50">
+                            <input type="checkbox" class="task-checkbox w-5 h-5 rounded border-2 border-[#4A3E3D] text-[#FF7E7E] focus:ring-[#FF7E7E] mt-0.5" onchange="updateProgress()">
+                            <span class="text-xs md:text-sm font-semibold text-[#4A3E3D]">
+                                <b>17:20 AREX ✈️：</b> 快速直達仁川機場 T2（18:11抵達），走外交官/專用通道，光速安檢出關，20:00 完美飛港！
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Celebration Popup modal when 100% completed -->
+    <div id="congrats-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="cartoon-card bg-[#FFF3E3] max-w-sm w-full p-6 text-center relative">
+            <span class="text-6xl block mb-3">🎉</span>
+            <h3 class="text-2xl font-black text-[#FF6F3D] mb-2">太犀利啦！</h3>
+            <p class="text-sm font-bold text-[#5C4D4C] mb-5">
+                你已經剔選晒 9 天嘅所有完美行程！你已經做好起飛自駕嘅極致準備啦！
+            </p>
+            <button onclick="closeCongrats()" class="cartoon-btn bg-[#FF7E7E] text-white px-6 py-2.5 rounded-xl font-black text-sm w-full">
+                等我出發去韓國！🚗💨
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Dialog list for mascot Koko based on selected day (Updated with new itinerary)
+        const mascotTips = {
+            1: "第一晚入住弘大2號口Airbnb，放低行李就直奔『永東薯仔排骨鍋』！佢哋嘅獨門白湯排骨鍋極致濃郁，同平時出面食嘅紅湯好唔同，暖笠笠超正！🍲",
+            2: "去完望遠市場掃街，記得去隔離大宅風嘅 Anthracite 飲杯手沖單品咖啡買豆！下晝再去 Tailor Coffee 買精品咖啡豆，夜晚再食名廚 Sam Kim 意式晚餐，完美！☕🛍️",
+            3: "今日早啲起身！08:00 去排 Artist Bakery 食人氣鹽麵包，晏晝去京東市場食安東家手工刀削麵配白菜煎餅（豆香超濃郁！），下晝再去 Fritz Coffee 桃花店買傳奇咖啡豆，夜晚食 Doughroom 意粉！🍝",
+            4: "搭 11:00/11:30 KTX 飛奔去慶州，落車就去新慶州站攞自駕車！下晝去皇理團路嘅『Fe訂』或『Café 洪柿』，坐喺韓屋歎原隻熟成紅柿雪葩🍧，夜晚再去東宮與月池睇超靚古建築倒影！✨",
+            5: "今日係慶州古都深度遊！早啲去佛國寺同石窟庵避開人潮，下晝漫步大陵苑草丘同瞻星台，夜晚去月精橋散步，影相真係靚到好似穿越古代咁！🏺",
+            6: "揸車 50 分鐘去浦項挑戰 Space Walk 鋼鐵過山車，喺上面睇迎日灣海景超壯觀！食完竹島市場鮮甜嘅『水生魚片』，下晝再去九龍浦同虎尾岬打卡矗立海中嘅『相生之手』！🖐️",
+            7: "今日自駕去大邱！行完金光石路，去西門市場必試煎得金黃嘅『扁餃子』配微辣刀切麵！夜晚揸車上前往山展望台，無死角飽覽大邱繁華夜景！🌃",
+            8: "今日有兩個方案任你揀！精力充沛嘅可以去大邱 E-World 玩刺激機動遊戲同打卡 83 塔；想慢活嘅可以留喺慶州普門湖畔放空，去校村散步，享受自駕嘅隨心自在！🎪",
+            9: "今日最關鍵！11:00 前喺新慶州站還車，搭 KTX 返首爾站。記住 15:15 前喺首爾站 B2 搞掂『城市機場預辦登機』同寄艙行李！之後兩手空空去樂天超市買最後手信，飲杯芝麻拿鐵，再搭 AREX 輕鬆去機場過關！✈️"
+        };
+
+        // KTX Train positions on the map for various days
+        const ktxCoordinates = {
+            1: { x: 150, y: 110, scale: 1 }, // Seoul
+            2: { x: 150, y: 110, scale: 1 }, // Seoul
+            3: { x: 150, y: 110, scale: 1 }, // Seoul
+            4: { x: 290, y: 280, scale: 1 }, // Gyeongju
+            5: { x: 290, y: 280, scale: 1 }, // Gyeongju
+            6: { x: 330, y: 250, scale: 1.1 }, // Pohang
+            7: { x: 250, y: 280, scale: 1.1 }, // Daegu
+            8: { x: 270, y: 280, scale: 1.05 }, // Daegu/Gyeongju
+            9: { x: 150, y: 110, scale: 1 }  // Back to Seoul
+        };
+
+        let currentDay = 1;
+        let showCongratsPopup = true;
+
+        function scrollToDay(dayNum) {
+            const el = document.getElementById(`day-${dayNum}`);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setActiveDay(dayNum);
             }
-        });
-
-        document.getElementById('header-title').textContent = title;
-
-        const views = document.querySelectorAll('.day-view');
-        views.forEach(view => view.classList.remove('active'));
-
-        const target = document.getElementById('view-' + viewId);
-        if (target) {
-            target.classList.add('active');
-            window.scrollTo(0, 0);
         }
-    }
-</script>
+
+        function setActiveDay(dayNum) {
+            currentDay = dayNum;
+            
+            document.querySelectorAll('.day-card').forEach(card => {
+                card.classList.remove('ring-4', 'ring-[#FF8A3D]', 'scale-[1.01]');
+            });
+            const activeCard = document.getElementById(`day-${dayNum}`);
+            if (activeCard) {
+                activeCard.classList.add('ring-4', 'ring-[#FF8A3D]', 'scale-[1.01]');
+            }
+
+            const train = document.getElementById('ktx-train');
+            if (train && ktxCoordinates[dayNum]) {
+                const coord = ktxCoordinates[dayNum];
+                train.setAttribute('transform', `translate(${coord.x}, ${coord.y}) scale(${coord.scale})`);
+            }
+
+            const speechBubble = document.getElementById('mascot-speech');
+            if (speechBubble && mascotTips[dayNum]) {
+                speechBubble.innerText = mascotTips[dayNum];
+            }
+
+            if (dayNum <= 3) {
+                highlightStageButton(1);
+            } else if (dayNum <= 8) {
+                highlightStageButton(2);
+            } else {
+                highlightStageButton(3);
+            }
+        }
+
+        function switchStage(stageNum) {
+            document.querySelectorAll('.timeline-stage-group').forEach((grp, idx) => {
+                if (idx + 1 === stageNum) {
+                    grp.classList.remove('hidden');
+                } else {
+                    grp.classList.add('hidden');
+                }
+            });
+
+            highlightStageButton(stageNum);
+
+            if (stageNum === 1) {
+                scrollToDay(1);
+            } else if (stageNum === 2) {
+                scrollToDay(4);
+            } else {
+                scrollToDay(9);
+            }
+        }
+
+        function highlightStageButton(stageNum) {
+            document.querySelectorAll('[id^="btn-stage-"]').forEach((btn, idx) => {
+                if (idx + 1 === stageNum) {
+                    btn.classList.add('active-stage-btn');
+                } else {
+                    btn.classList.remove('active-stage-btn');
+                }
+            });
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const totalCount = checkboxes.length;
+            
+            const progressPct = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+            
+            const progressBar = document.getElementById('overall-progress');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressBar && progressText) {
+                progressBar.style.width = `${progressPct}%`;
+                progressText.innerText = `${progressPct}% 完成`;
+            }
+
+            if (progressPct === 100 && showCongratsPopup) {
+                document.getElementById('congrats-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeCongrats() {
+            document.getElementById('congrats-modal').classList.add('hidden');
+            showCongratsPopup = false;
+        }
+
+        window.onload = function() {
+            document.querySelectorAll('.task-checkbox').forEach(cb => cb.checked = false);
+            updateProgress();
+            setActiveDay(1);
+        };
+    </script>
 </body>
 </html>
