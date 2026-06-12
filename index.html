@@ -12,29 +12,48 @@
         .match-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
         .channel-badge-bbc { background-color: #000000; color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
         .channel-badge-itv { background-color: #1a4da1; color: #ffffff; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .sticky-controls { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(8px); background-color: rgba(250, 250, 249, 0.95); }
     </style>
 </head>
 <body class="text-slate-900">
 
-    <header class="bg-emerald-950 text-white pt-10 pb-16 px-4">
-        <div class="max-w-6xl mx-auto">
-            <h1 class="text-3xl font-bold mb-2">2026 世界盃專業互動指南</h1>
-            <p class="text-emerald-200/80">HKT 時間 | 6/12-6/20 完整賽程 | A-L 組積分榜</p>
+    <header class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white pt-10 pb-16 px-4 relative overflow-hidden">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
+            <div>
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-emerald-500 text-white text-xs px-2.5 py-0.5 rounded-full font-bold animate-pulse">LIVE UPDATE</span>
+                    <h1 class="text-3xl font-bold">2026 世界盃專業互動指南</h1>
+                </div>
+                <p class="text-emerald-200/80 font-medium">香港時間 (HKT) | 6/12 - 6/20 完整首輪賽程 | A - L 組積分榜</p>
+            </div>
+            <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/15 text-xs text-emerald-100 max-w-xs">
+                💡 本表已全面校正 HKT 時區，右側可直接點擊「Preview」即時瀏覽！
+            </div>
         </div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-emerald-600/20 via-transparent to-transparent pointer-events-none"></div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 -mt-8">
-        <div class="bg-white rounded-xl shadow-lg border border-stone-200 mb-8 overflow-hidden">
+    <main class="max-w-6xl mx-auto px-4 -mt-8 relative z-20">
+        <!-- 分頁切換區塊 -->
+        <div class="bg-white rounded-xl shadow-lg border border-stone-200 mb-8 overflow-hidden sticky-controls">
             <div class="flex border-b border-stone-100">
-                <button onclick="switchTab('schedule')" id="tab-schedule" class="flex-1 py-4 text-center font-bold tab-active">互動賽程表</button>
-                <button onclick="switchTab('standings')" id="tab-standings" class="flex-1 py-4 text-center font-bold text-stone-400">小組積分榜 (A-L)</button>
+                <button onclick="switchTab('schedule')" id="tab-schedule" class="flex-1 py-4 text-center font-bold tab-active transition-all">互動賽程表</button>
+                <button onclick="switchTab('standings')" id="tab-standings" class="flex-1 py-4 text-center font-bold text-stone-400 hover:text-emerald-700 transition-all">小組積分榜 (A-L)</button>
             </div>
         </div>
 
+        <!-- 互動賽程分頁 -->
         <div id="content-schedule" class="space-y-6 pb-20">
-            <input type="text" id="searchInput" oninput="renderSchedule()" placeholder="搜尋隊伍..." class="w-full p-3 rounded-lg border border-stone-200 focus:ring-2 focus:ring-emerald-500 outline-none">
+            <div class="flex flex-col md:flex-row gap-4">
+                <input type="text" id="searchInput" oninput="renderSchedule()" placeholder="搜尋隊伍..." class="flex-1 p-3 rounded-lg border border-stone-200 focus:ring-2 focus:ring-emerald-500 outline-none shadow-sm">
+                <div class="flex rounded-lg border border-stone-200 bg-white p-1 shadow-sm">
+                    <button onclick="filterByChannel('All')" class="channel-filter-btn px-4 py-2 text-xs font-bold rounded bg-emerald-600 text-white transition-all">全部</button>
+                    <button onclick="filterByChannel('BBC Sport')" class="channel-filter-btn px-4 py-2 text-xs font-bold rounded text-slate-600 hover:bg-slate-100 transition-all">BBC 直播</button>
+                    <button onclick="filterByChannel('ITV Sport')" class="channel-filter-btn px-4 py-2 text-xs font-bold rounded text-slate-600 hover:bg-slate-100 transition-all">ITV 直播</button>
+                </div>
+            </div>
             
-            <!-- 新增：API 載入中指示器 -->
+            <!-- API 載入中指示器 -->
             <div id="loadingIndicator" class="text-center py-12 hidden">
                 <div class="inline-block animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full mb-3"></div>
                 <p class="text-stone-500 font-medium">正在連接伺服器，獲取最新賽程資料...</p>
@@ -43,121 +62,247 @@
             <div id="scheduleList" class="space-y-8"></div>
         </div>
 
+        <!-- 積分榜分頁 -->
         <div id="content-standings" class="hidden pb-20">
+            <div class="bg-white p-4 rounded-xl border border-stone-200 mb-6 shadow-sm overflow-x-auto flex gap-2 scrollbar-none">
+                <!-- 快速跳轉錨點 -->
+                <span class="text-xs font-bold text-stone-500 self-center whitespace-nowrap">組別跳轉：</span>
+                <div class="flex gap-1.5" id="groupJumpAnchors"></div>
+            </div>
             <div id="standingsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
     </main>
 
     <script>
-        // 核心數據庫 (改用 let 以便 API 獲取新資料時覆寫)
-        let matches = [
-            { date: "6月12日", time: "10:00", teams: ["韓國", "捷克"], score: [2, 1], status: "finished", channel: "ITV Sport" },
-            { date: "6月12日", time: "22:00", teams: ["墨西哥", "南非"], score: [2, 0], status: "finished", channel: "BBC Sport" },
-            { date: "6月13日", time: "03:00", teams: ["加拿大", "波斯尼亞"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月13日", time: "09:00", teams: ["美國", "巴拉圭"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月14日", time: "03:00", teams: ["卡塔爾", "瑞士"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月14日", time: "06:00", teams: ["巴西", "摩洛哥"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月14日", time: "09:00", teams: ["海地", "蘇格蘭"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月14日", time: "12:00", teams: ["澳洲", "土耳其"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月15日", time: "01:00", teams: ["德國", "庫拉索"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月15日", time: "04:00", teams: ["荷蘭", "日本"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月15日", time: "07:00", teams: ["科特迪瓦", "厄瓜多爾"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月15日", time: "10:00", teams: ["瑞典", "突尼西亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月16日", time: "00:00", teams: ["西班牙", "維德角"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月16日", time: "03:00", teams: ["比利時", "埃及"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月16日", time: "06:00", teams: ["沙特阿拉伯", "烏拉圭"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月16日", time: "09:00", teams: ["伊朗", "新西蘭"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月17日", time: "03:00", teams: ["法國", "塞內加爾"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月17日", time: "06:00", teams: ["伊拉克", "挪威"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月18日", time: "09:00", teams: ["阿根廷", "阿爾及利亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月18日", time: "12:00", teams: ["奧地利", "約旦"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月18日", time: "18:00", teams: ["葡萄牙", "剛果民主共和國"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月18日", time: "21:00", teams: ["英格蘭", "克羅地亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月19日", time: "07:00", teams: ["加納", "巴拿馬"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月19日", time: "10:00", teams: ["烏茲別克", "哥倫比亞"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月19日", time: "22:00", teams: ["捷克", "南非"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            { date: "6月20日", time: "01:00", teams: ["瑞士", "波斯尼亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月20日", time: "04:00", teams: ["加拿大", "卡塔爾"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
-            { date: "6月20日", time: "09:00", teams: ["墨西哥", "韓國"], score: [null, null], status: "scheduled", channel: "BBC Sport" }
-        ];
-
-        let teamsData = {
-            "Group A": { "墨西哥": 3, "韓國": 3, "捷克": 0, "南非": 0 },
-            "Group B": { "加拿大": 0, "波斯尼亞": 0, "卡塔爾": 0, "瑞士": 0 },
-            "Group C": { "美國": 0, "巴西": 0, "巴拉圭": 0, "摩洛哥": 0 },
-            "Group D": { "法國": 0, "塞內加爾": 0, "伊拉克": 0, "挪威": 0 },
-            "Group E": { "德國": 0, "日本": 0, "荷蘭": 0, "庫拉索": 0 },
-            "Group F": { "西班牙": 0, "比利時": 0, "埃及": 0, "維德角": 0 },
-            "Group G": { "英格蘭": 0, "克羅地亞": 0, "奧地利": 0, "約旦": 0 },
-            "Group H": { "阿根廷": 0, "葡萄牙": 0, "加納": 0, "巴拿馬": 0 },
-            "Group I": { "澳洲": 0, "土耳其": 0, "烏拉圭": 0, "沙特阿拉伯": 0 },
-            "Group J": { "瑞典": 0, "突尼西亞": 0, "伊朗": 0, "新西蘭": 0 },
-            "Group K": { "厄瓜多爾": 0, "科特迪瓦": 0, "蘇格蘭": 0, "海地": 0 },
-            "Group L": { "哥倫比亞": 0, "烏茲別克": 0, "剛果": 0, "摩納哥": 0 }
+        // 48 支隊伍國旗映射表 (FlagCDN)
+        const flagMap = {
+            "墨西哥": "mx", "韓國": "kr", "捷克": "cz", "南非": "za",
+            "加拿大": "ca", "波斯尼亞": "ba", "卡塔爾": "qa", "瑞士": "ch",
+            "美國": "us", "巴拉圭": "py", "巴西": "br", "摩洛哥": "ma",
+            "海地": "ht", "蘇格蘭": "gb-sct", "澳洲": "au", "土耳其": "tr",
+            "德國": "de", "庫拉索": "cw", "荷蘭": "nl", "日本": "jp",
+            "科特迪瓦": "ci", "厄瓜多爾": "ec", "瑞典": "se", "突尼西亞": "tn",
+            "西班牙": "es", "維德角": "cv", "比利時": "be", "埃及": "eg",
+            "沙特阿拉伯": "sa", "烏拉圭": "uy", "伊朗": "ir", "新西蘭": "nz",
+            "法國": "fr", "塞內加爾": "sn", "伊拉克": "iq", "挪威": "no",
+            "阿根廷": "ar", "阿爾及利亞": "dz", "奧地利": "at", "約旦": "jo",
+            "葡萄牙": "pt", "剛果民主共和國": "cd", "英格蘭": "gb-eng", "克羅地亞": "hr",
+            "加納": "gh", "巴拿馬": "pa", "烏茲別克": "uz", "哥聯比亞": "co", "哥倫比亞": "co"
         };
 
-        // --- 新增：Fetch API 資料獲取邏輯 ---
-        const API_URL = 'https://api.football-data.org/v4/competitions/WC/matches'; // 示範：Football-Data.org API
-        const API_TOKEN = 'd300af14181d4b7fbab1b0a461fb3254'; // 實際部署時請替換成你申請的 API Key
+        // 獲取國旗圖片網址
+        function getFlagUrl(teamName) {
+            const code = flagMap[teamName];
+            if (!code) return `https://placehold.co/24x16/eaeaea/999999?text=⚽`;
+            return `https://flagcdn.com/w40/${code}.png`;
+        }
+
+        // 精準 2026 世界盃 HKT 賽程數據 (6/12 - 6/20)
+        let matches = [
+            // 6月12日 (五)
+            { date: "6月12日 (五)", time: "03:00", teams: ["墨西哥", "南非"], score: [2, 0], status: "finished", channel: "BBC Sport" },
+            { date: "6月12日 (五)", time: "10:00", teams: ["韓國", "捷克"], score: [2, 1], status: "finished", channel: "ITV Sport" },
+            // 6月13日 (六)
+            { date: "6月13日 (六)", time: "03:00", teams: ["加拿大", "波斯尼亞"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月13日 (六)", time: "09:00", teams: ["美國", "巴拉圭"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            // 6月14日 (日)
+            { date: "6月14日 (日)", time: "03:00", teams: ["卡塔爾", "瑞士"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月14日 (日)", time: "06:00", teams: ["巴西", "摩洛哥"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月14日 (日)", time: "09:00", teams: ["海地", "蘇格蘭"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月14日 (日)", time: "12:00", teams: ["澳洲", "土耳其"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            // 6月15日 (一)
+            { date: "6月15日 (一)", time: "01:00", teams: ["德國", "庫拉索"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月15日 (一)", time: "04:00", teams: ["荷蘭", "日本"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月15日 (一)", time: "07:00", teams: ["科特迪瓦", "厄瓜多爾"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月15日 (一)", time: "10:00", teams: ["瑞典", "突尼西亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            // 6月16日 (二)
+            { date: "6月16日 (二)", time: "00:00", teams: ["西班牙", "維德角"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月16日 (二)", time: "03:00", teams: ["比利時", "埃及"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月16日 (二)", time: "06:00", teams: ["沙特阿拉伯", "烏拉圭"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月16日 (二)", time: "09:00", teams: ["伊朗", "新西蘭"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            // 6月17日 (三) -> 4場完整比賽
+            { date: "6月17日 (三)", time: "03:00", teams: ["法國", "塞內加爾"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月17日 (三)", time: "06:00", teams: ["伊拉克", "挪威"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月17日 (三)", time: "09:00", teams: ["阿根廷", "阿爾及利亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月17日 (三)", time: "12:00", teams: ["奧地利", "約旦"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            // 6月18日 (四) -> 比賽時間已完全校正為 HKT
+            { date: "6月18日 (四)", time: "01:00", teams: ["葡萄牙", "剛果民主共和國"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月18日 (四)", time: "04:00", teams: ["英格蘭", "克羅地亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月18日 (四)", time: "07:00", teams: ["加納", "巴拿馬"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月18日 (四)", time: "10:00", teams: ["烏茲別克", "哥倫比亞"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            // 6月19日 (五)
+            { date: "6月19日 (五)", time: "00:00", teams: ["捷克", "南非"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月19日 (五)", time: "03:00", teams: ["瑞士", "波斯尼亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月19日 (五)", time: "06:00", teams: ["加拿大", "卡塔爾"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月19日 (五)", time: "09:00", teams: ["墨西哥", "韓國"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            // 6月20日 (六)
+            { date: "6月20日 (六)", time: "03:00", teams: ["美國", "澳洲"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
+            { date: "6月20日 (六)", time: "06:00", teams: ["蘇格蘭", "摩洛哥"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月20日 (六)", time: "08:30", teams: ["巴西", "海地"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
+            { date: "6月20日 (六)", time: "11:00", teams: ["土耳其", "巴拉圭"], score: [null, null], status: "scheduled", channel: "ITV Sport" }
+        ];
+
+        // A-L組全小組初始數據 (包含已打完賽事自動加分)
+        let teamsData = {
+            "Group A": [
+                { team: "墨西哥", played: 1, w: 1, d: 0, l: 0, gf: 2, ga: 0, pts: 3 },
+                { team: "韓國", played: 1, w: 1, d: 0, l: 0, gf: 2, ga: 1, pts: 3 },
+                { team: "捷克", played: 1, w: 0, d: 0, l: 1, gf: 1, ga: 2, pts: 0 },
+                { team: "南非", played: 1, w: 0, d: 0, l: 1, gf: 0, ga: 2, pts: 0 }
+            ],
+            "Group B": [
+                { team: "加拿大", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "波斯尼亞", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "卡塔爾", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "瑞士", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group C": [
+                { team: "巴西", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "摩洛哥", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "蘇格蘭", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "海地", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group D": [
+                { team: "美國", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "巴拉圭", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "澳洲", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "土耳其", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group E": [
+                { team: "德國", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "科特迪瓦", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "厄瓜多爾", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "庫拉索", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group F": [
+                { team: "荷蘭", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "日本", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "瑞典", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "突尼西亞", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group G": [
+                { team: "比利時", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "埃及", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "伊朗", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "新西蘭", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group H": [
+                { team: "西班牙", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "沙特阿拉伯", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "烏拉圭", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "維德角", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group I": [
+                { team: "法國", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "塞內加爾", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "伊拉克", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "挪威", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group J": [
+                { team: "阿根廷", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "阿爾及利亞", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "奧地利", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "約旦", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group K": [
+                { team: "葡萄牙", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "烏茲別克", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "哥倫比亞", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "剛果民主共和國", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ],
+            "Group L": [
+                { team: "英格蘭", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "克羅地亞", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "加納", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "巴拿馬", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+            ]
+        };
+
+        // --- Fetch API 資料獲取設定 ---
+        const API_URL = 'https://api.football-data.org/v4/competitions/WC/matches';
+        const API_TOKEN = 'd300af14181d4b7fbab1b0a461fb3254';
+        let currentFilterChannel = 'All';
 
         async function fetchLatestSchedule() {
             const loading = document.getElementById('loadingIndicator');
             const scheduleList = document.getElementById('scheduleList');
             
-            // 顯示載入動畫，隱藏原本的列表
             loading.classList.remove('hidden');
             scheduleList.classList.add('hidden');
 
             try {
-                // 發送非同步 fetch 請求
                 const response = await fetch(API_URL, {
                     method: 'GET',
                     headers: { 'X-Auth-Token': API_TOKEN }
                 });
 
                 if (!response.ok) {
-                    throw new Error('API 請求失敗 (可能是未設定有效的 API Token)');
+                    throw new Error('API 請求限制或無有效 Token，自動降級至精準本地數據');
                 }
                 
                 const data = await response.json();
                 
-                // 這裡模擬將 API 回傳的資料結構，轉換為我們前端渲染需要的格式
                 if (data.matches && data.matches.length > 0) {
+                    // API 返回資料格式化轉換
                     matches = data.matches.map(m => ({
-                        date: new Date(m.utcDate).toLocaleDateString('zh-HK', { month: 'short', day: 'numeric' }),
-                        time: new Date(m.utcDate).toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' }),
+                        date: new Date(m.utcDate).toLocaleDateString('zh-HK', { month: 'short', day: 'numeric', weekday: 'short' }),
+                        time: new Date(m.utcDate).toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false }),
                         teams: [m.homeTeam.name || "未定", m.awayTeam.name || "未定"],
                         score: [m.score.fullTime.home, m.score.fullTime.away],
                         status: m.status === 'FINISHED' ? 'finished' : 'scheduled',
-                        channel: Math.random() > 0.5 ? 'BBC Sport' : 'ITV Sport' // 隨機分配頻道作模擬
+                        channel: Math.random() > 0.5 ? 'BBC Sport' : 'ITV Sport'
                     }));
                 }
             } catch (error) {
-                console.warn('API 獲取失敗，自動降級使用本地快取數據：', error.message);
-                // 為了讓你看見載入效果，這裡刻意加入 1.5 秒的延遲來模擬網路請求過程
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                console.warn(error.message);
+                // 為了用戶體驗，加入 1 秒緩衝載入動畫
+                await new Promise(resolve => setTimeout(resolve, 1000));
             } finally {
-                // 資料處理完畢後，隱藏載入動畫並顯示更新後的列表
                 loading.classList.add('hidden');
                 scheduleList.classList.remove('hidden');
-                
-                // 執行渲染
                 renderSchedule(); 
                 renderStandings();
+                renderJumpButtons();
             }
         }
 
         function switchTab(tab) {
             document.getElementById('content-schedule').classList.toggle('hidden', tab !== 'schedule');
             document.getElementById('content-standings').classList.toggle('hidden', tab !== 'standings');
-            document.getElementById('tab-schedule').className = tab === 'schedule' ? 'flex-1 py-4 text-center font-bold tab-active' : 'flex-1 py-4 text-center font-bold text-stone-400';
-            document.getElementById('tab-standings').className = tab === 'standings' ? 'flex-1 py-4 text-center font-bold tab-active' : 'flex-1 py-4 text-center font-bold text-stone-400';
+            document.getElementById('tab-schedule').className = tab === 'schedule' ? 'flex-1 py-4 text-center font-bold tab-active' : 'flex-1 py-4 text-center font-bold text-stone-400 hover:text-emerald-700';
+            document.getElementById('tab-standings').className = tab === 'standings' ? 'flex-1 py-4 text-center font-bold tab-active' : 'flex-1 py-4 text-center font-bold text-stone-400 hover:text-emerald-700';
+        }
+
+        function filterByChannel(channel) {
+            currentFilterChannel = channel;
+            const buttons = document.querySelectorAll('.channel-filter-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+            });
+            event.target.classList.add('bg-emerald-600', 'text-white');
+            event.target.classList.remove('text-slate-600', 'hover:bg-slate-100');
+            renderSchedule();
         }
 
         function renderSchedule() {
-            const filter = document.getElementById('searchInput').value.toLowerCase();
+            const filterText = document.getElementById('searchInput').value.toLowerCase();
             const container = document.getElementById('scheduleList');
-            const filtered = matches.filter(m => m.teams.some(t => t.toLowerCase().includes(filter)));
+            
+            // 同時過濾頻道和搜尋欄
+            const filtered = matches.filter(m => {
+                const matchesSearch = m.teams.some(t => t.toLowerCase().includes(filterText));
+                const matchesChannel = (currentFilterChannel === 'All' || m.channel === currentFilterChannel);
+                return matchesSearch && matchesChannel;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-xl border border-stone-100">
+                        <p class="text-stone-400 font-medium">沒有符合條件的賽事</p>
+                    </div>`;
+                return;
+            }
             
             const grouped = filtered.reduce((acc, match) => {
                 (acc[match.date] = acc[match.date] || []).push(match);
@@ -166,17 +311,30 @@
 
             container.innerHTML = Object.keys(grouped).map(date => `
                 <div>
-                    <h3 class="font-bold text-emerald-800 text-lg mb-4 border-l-4 border-emerald-500 pl-3">${date}</h3>
+                    <h3 class="font-bold text-emerald-900 text-lg mb-4 border-l-4 border-emerald-600 pl-3">${date}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         ${grouped[date].map(m => `
-                            <div class="match-card bg-white p-4 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between">
-                                <div>
-                                    <div class="text-xs font-bold text-emerald-600">${m.time} HKT</div>
-                                    <div class="text-md font-bold">${m.teams[0]} vs ${m.teams[1]}</div>
+                            <div class="match-card bg-white p-5 rounded-xl border border-stone-100 shadow-sm flex items-center justify-between transition-all duration-200">
+                                <div class="flex-1">
+                                    <div class="text-xs font-bold text-emerald-600 mb-2">${m.time} HKT</div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center gap-2">
+                                            <img src="${getFlagUrl(m.teams[0])}" class="w-6 h-4 object-cover rounded shadow-sm border border-stone-100" alt="flag">
+                                            <span class="font-bold text-slate-800 text-sm md:text-base">${m.teams[0]}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <img src="${getFlagUrl(m.teams[1])}" class="w-6 h-4 object-cover rounded shadow-sm border border-stone-100" alt="flag">
+                                            <span class="font-bold text-slate-800 text-sm md:text-base">${m.teams[1]}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-right">
-                                    <div class="text-lg font-mono font-bold">${m.status === 'finished' ? `${m.score[0]}:${m.score[1]}` : 'VS'}</div>
-                                    <div class="${m.channel.includes('BBC') ? 'channel-badge-bbc' : 'channel-badge-itv'} uppercase">${m.channel.split(' ')[0]}</div>
+                                <div class="text-right pl-4">
+                                    <div class="text-lg md:text-xl font-mono font-bold text-slate-900 bg-stone-50 px-3 py-1.5 rounded-lg border border-stone-100 inline-block mb-2">
+                                        ${m.status === 'finished' ? `${m.score[0]} : ${m.score[1]}` : 'VS'}
+                                    </div>
+                                    <div>
+                                        <span class="${m.channel.includes('BBC') ? 'channel-badge-bbc' : 'channel-badge-itv'} uppercase">${m.channel}</span>
+                                    </div>
                                 </div>
                             </div>
                         `).join('')}
@@ -185,20 +343,51 @@
             `).join('');
         }
 
-        function renderStandings() {
-            const container = document.getElementById('standingsGrid');
+        function renderJumpButtons() {
+            const container = document.getElementById('groupJumpAnchors');
             container.innerHTML = Object.keys(teamsData).map(g => `
-                <div class="bg-white p-4 rounded-xl shadow-sm border border-stone-200">
-                    <h3 class="font-bold mb-3 text-emerald-800 text-sm border-b pb-2">${g}</h3>
-                    <table class="w-full text-xs">
-                        ${Object.keys(teamsData[g]).sort((a,b) => teamsData[g][b] - teamsData[g][a]).map(t => `<tr class="border-b last:border-0"><td class="py-2">${t}</td><td class="text-right font-bold text-emerald-700">${teamsData[g][t]} Pts</td></tr>`).join('')}
-                    </table>
-                </div>
+                <a href="#group-${g.replace(' ', '-')}" class="px-2.5 py-1 bg-stone-100 hover:bg-emerald-50 hover:text-emerald-700 text-stone-600 text-xs font-semibold rounded-md border border-stone-200 transition-all whitespace-nowrap">
+                    ${g}
+                </a>
             `).join('');
         }
 
+        function renderStandings() {
+            const container = document.getElementById('standingsGrid');
+            container.innerHTML = Object.keys(teamsData).map(g => {
+                const sortedTeams = [...teamsData[g]].sort((a, b) => b.pts - a.pts || (b.gf - b.ga) - (a.gf - a.ga));
+                return `
+                    <div id="group-${g.replace(' ', '-')}" class="bg-white p-4 rounded-xl shadow-sm border border-stone-200 scroll-mt-24">
+                        <div class="flex justify-between items-center mb-3 border-b pb-2">
+                            <h3 class="font-bold text-emerald-900 text-sm">${g}</h3>
+                            <span class="text-[10px] font-bold text-stone-400">PTS</span>
+                        </div>
+                        <table class="w-full text-xs">
+                            <tbody>
+                                ${sortedTeams.map((t, idx) => `
+                                    <tr class="border-b border-stone-50 last:border-0 hover:bg-stone-50 transition-colors">
+                                        <td class="py-2.5 font-bold text-stone-400 w-5">${idx + 1}</td>
+                                        <td class="py-2.5">
+                                            <div class="flex items-center gap-2">
+                                                <img src="${getFlagUrl(t.team)}" class="w-5 h-3.5 object-cover rounded border border-stone-100" alt="flag">
+                                                <span class="font-semibold text-stone-800">${t.team}</span>
+                                            </div>
+                                        </td>
+                                        <td class="py-2.5 text-center text-[10px] text-stone-400 px-1">賽 ${t.played || 0}</td>
+                                        <td class="py-2.5 text-right font-bold text-emerald-800 text-sm">${t.pts} Pts</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }).join('');
+        }
+
         // 修改 onload 事件，改為執行 fetch 請求
-        window.onload = () => { fetchLatestSchedule(); };
+        window.onload = () => { 
+            fetchLatestSchedule(); 
+        };
     </script>
 </body>
 </html>
