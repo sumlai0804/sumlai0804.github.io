@@ -21,13 +21,13 @@
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
             <div>
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="bg-emerald-500 text-white text-xs px-2.5 py-0.5 rounded-full font-bold animate-pulse">LIVE UPDATE</span>
+                    <span id="apiStatus" class="bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold">載入中...</span>
                     <h1 class="text-3xl font-bold">2026 世界盃專業互動指南</h1>
                 </div>
                 <p class="text-emerald-200/80 font-medium">香港時間 (HKT) | 6/12 - 6/20 完整首輪賽程 | A - L 組積分榜</p>
             </div>
             <div class="bg-white/10 backdrop-blur-md rounded-xl p-3 border border-white/15 text-xs text-emerald-100 max-w-xs">
-                💡 本表已全面校正 HKT 時區，右側可直接點擊「Preview」即時瀏覽！
+                💡 本系統已整合 <b>Football-Data API</b>，利用 CORS 反向代理技術繞過瀏覽器限制，實時同步世界盃數據。
             </div>
         </div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-emerald-600/20 via-transparent to-transparent pointer-events-none"></div>
@@ -54,12 +54,12 @@
             </div>
             
             <!-- API 載入中指示器 -->
-            <div id="loadingIndicator" class="text-center py-12 hidden">
+            <div id="loadingIndicator" class="text-center py-12">
                 <div class="inline-block animate-spin w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full mb-3"></div>
-                <p class="text-stone-500 font-medium">正在連接伺服器，獲取最新賽程資料...</p>
+                <p class="text-stone-500 font-medium">正在透過代理伺服器獲取最新官方賽事資料...</p>
             </div>
 
-            <div id="scheduleList" class="space-y-8"></div>
+            <div id="scheduleList" class="space-y-8 hidden"></div>
         </div>
 
         <!-- 積分榜分頁 -->
@@ -87,7 +87,7 @@
             "法國": "fr", "塞內加爾": "sn", "伊拉克": "iq", "挪威": "no",
             "阿根廷": "ar", "阿爾及利亞": "dz", "奧地利": "at", "約旦": "jo",
             "葡萄牙": "pt", "剛果民主共和國": "cd", "英格蘭": "gb-eng", "克羅地亞": "hr",
-            "加納": "gh", "巴拿馬": "pa", "烏茲別克": "uz", "哥聯比亞": "co", "哥倫比亞": "co"
+            "加納": "gh", "巴拿馬": "pa", "烏茲別克": "uz", "哥倫比亞": "co"
         };
 
         // 獲取國旗圖片網址
@@ -97,7 +97,7 @@
             return `https://flagcdn.com/w40/${code}.png`;
         }
 
-        // 精準 2026 世界盃 HKT 賽程數據 (6/12 - 6/20)
+        // 預設 2026 世界盃 HKT 本地賽程數據 (6/12 - 6/20)
         let matches = [
             // 6月12日 (五)
             { date: "6月12日 (五)", time: "03:00", teams: ["墨西哥", "南非"], score: [2, 0], status: "finished", channel: "BBC Sport" },
@@ -120,12 +120,12 @@
             { date: "6月16日 (二)", time: "03:00", teams: ["比利時", "埃及"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
             { date: "6月16日 (二)", time: "06:00", teams: ["沙特阿拉伯", "烏拉圭"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
             { date: "6月16日 (二)", time: "09:00", teams: ["伊朗", "新西蘭"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            // 6月17日 (三) -> 4場完整比賽
+            // 6月17日 (三)
             { date: "6月17日 (三)", time: "03:00", teams: ["法國", "塞內加爾"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
             { date: "6月17日 (三)", time: "06:00", teams: ["伊拉克", "挪威"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
             { date: "6月17日 (三)", time: "09:00", teams: ["阿根廷", "阿爾及利亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
             { date: "6月17日 (三)", time: "12:00", teams: ["奧地利", "約旦"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
-            // 6月18日 (四) -> 比賽時間已完全校正為 HKT
+            // 6月18日 (四)
             { date: "6月18日 (四)", time: "01:00", teams: ["葡萄牙", "剛果民主共和國"], score: [null, null], status: "scheduled", channel: "BBC Sport" },
             { date: "6月18日 (四)", time: "04:00", teams: ["英格蘭", "克羅地亞"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
             { date: "6月18日 (四)", time: "07:00", teams: ["加納", "巴拿馬"], score: [null, null], status: "scheduled", channel: "ITV Sport" },
@@ -142,13 +142,13 @@
             { date: "6月20日 (六)", time: "11:00", teams: ["土耳其", "巴拉圭"], score: [null, null], status: "scheduled", channel: "ITV Sport" }
         ];
 
-        // A-L組全小組初始數據 (包含已打完賽事自動加分)
+        // A-L組全小組初始數據
         let teamsData = {
             "Group A": [
-                { team: "墨西哥", played: 1, w: 1, d: 0, l: 0, gf: 2, ga: 0, pts: 3 },
-                { team: "韓國", played: 1, w: 1, d: 0, l: 0, gf: 2, ga: 1, pts: 3 },
-                { team: "捷克", played: 1, w: 0, d: 0, l: 1, gf: 1, ga: 2, pts: 0 },
-                { team: "南非", played: 1, w: 0, d: 0, l: 1, gf: 0, ga: 2, pts: 0 }
+                { team: "墨西哥", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "韓國", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "捷克", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "南非", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
             ],
             "Group B": [
                 { team: "加拿大", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
@@ -206,9 +206,9 @@
             ],
             "Group K": [
                 { team: "葡萄牙", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
+                { team: "剛果民主共和國", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
                 { team: "烏茲別克", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
-                { team: "哥倫比亞", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
-                { team: "剛果民主共和國", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
+                { team: "哥倫比亞", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 }
             ],
             "Group L": [
                 { team: "英格蘭", played: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0 },
@@ -218,52 +218,218 @@
             ]
         };
 
-        // --- Fetch API 資料獲取設定 ---
-        const API_URL = 'https://api.football-data.org/v4/competitions/WC/matches';
+        const englishToChineseTeamMap = {
+            "Mexico": "墨西哥",
+            "South Korea": "韓國", "Korea Republic": "韓國", "Republic of Korea": "韓國",
+            "Czechia": "捷克", "Czech Republic": "捷克",
+            "South Africa": "南非",
+            "Canada": "加拿大",
+            "Bosnia and Herzegovina": "波斯尼亞", "Bosnia": "波斯尼亞",
+            "Qatar": "卡塔爾",
+            "Switzerland": "瑞士",
+            "United States": "美國", "USA": "美國", "US": "美國", "United States men's national soccer team": "美國",
+            "Paraguay": "巴拉圭",
+            "Brazil": "巴西",
+            "Morocco": "摩洛哥",
+            "Haiti": "海地",
+            "Scotland": "蘇格蘭",
+            "Australia": "澳洲",
+            "Turkey": "土耳其", "Türkiye": "土耳其",
+            "Germany": "德國",
+            "Curaçao": "庫拉索", "Curacao": "庫拉索",
+            "Netherlands": "荷蘭",
+            "Japan": "日本",
+            "Côte d'Ivoire": "科特迪瓦", "Ivory Coast": "科特迪瓦", "Cote d'Ivoire": "科特迪瓦",
+            "Ecuador": "厄瓜多爾",
+            "Sweden": "瑞典",
+            "Tunisia": "突尼西亞",
+            "Spain": "西班牙",
+            "Cape Verde": "維德角", "Cabo Verde": "維德角",
+            "Belgium": "比利時",
+            "Egypt": "埃及",
+            "Saudi Arabia": "沙特阿拉伯",
+            "Uruguay": "烏拉圭",
+            "Iran": "伊朗", "IR Iran": "伊朗",
+            "New Zealand": "新西蘭",
+            "France": "法國",
+            "Senegal": "塞內加爾",
+            "Iraq": "伊拉克",
+            "Norway": "挪威",
+            "Argentina": "阿根廷",
+            "Algeria": "阿爾及利亞",
+            "Austria": "奧地利",
+            "Jordan": "約旦",
+            "Portugal": "葡萄牙",
+            "DR Congo": "剛果民主共和國", "Congo DR": "剛果民主共和國",
+            "England": "英格蘭",
+            "Croatia": "克羅地亞",
+            "Ghana": "加納",
+            "Panama": "巴拿馬",
+            "Uzbekistan": "烏茲別克",
+            "Colombia": "哥倫比亞"
+        };
+
+        // 翻譯 API 的英文隊名到繁體中文
+        function translateTeamName(name) {
+            if (!name) return "未定";
+            let cleanName = name.replace(/\s+national\s+football\s+team/gi, '')
+                                .replace(/\s+national\s+soccer\s+team/gi, '')
+                                .replace(/\s+men's\s+national\s+soccer\s+team/gi, '')
+                                .trim();
+            return englishToChineseTeamMap[cleanName] || englishToChineseTeamMap[name] || name;
+        }
+
+        // --- Fetch API 資料獲取與多重代理設定 ---
+        const API_RAW_URL = 'https://api.football-data.org/v4/competitions/WC/matches';
+        // 第一代理：CORSProxy.io
+        const PROXY_1 = 'https://corsproxy.io/?' + encodeURIComponent(API_RAW_URL);
+        // 第二代理：AllOrigins (JSON格式包裝)
+        const PROXY_2 = 'https://api.allorigins.win/get?url=' + encodeURIComponent(API_RAW_URL);
+        
         const API_TOKEN = 'd300af14181d4b7fbab1b0a461fb3254';
         let currentFilterChannel = 'All';
 
         async function fetchLatestSchedule() {
             const loading = document.getElementById('loadingIndicator');
             const scheduleList = document.getElementById('scheduleList');
-            
+            const apiStatus = document.getElementById('apiStatus');
+
             loading.classList.remove('hidden');
             scheduleList.classList.add('hidden');
 
+            let dataLoaded = false;
+
+            // 1. 嘗試使用 CORSProxy.io 代理進行標準 API 請求
             try {
-                const response = await fetch(API_URL, {
+                console.log("正在通過首選代理 (CORSProxy) 連線...");
+                const response = await fetch(PROXY_1, {
                     method: 'GET',
                     headers: { 'X-Auth-Token': API_TOKEN }
                 });
 
-                if (!response.ok) {
-                    throw new Error('API 請求限制或無有效 Token，自動降級至精準本地數據');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.matches) {
+                        parseApiMatches(data.matches);
+                        dataLoaded = true;
+                        apiStatus.innerText = '實時數據同步中';
+                        apiStatus.className = 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold';
+                        console.log("CORSProxy 加載成功！");
+                    }
                 }
-                
-                const data = await response.json();
-                
-                if (data.matches && data.matches.length > 0) {
-                    // API 返回資料格式化轉換
-                    matches = data.matches.map(m => ({
-                        date: new Date(m.utcDate).toLocaleDateString('zh-HK', { month: 'short', day: 'numeric', weekday: 'short' }),
-                        time: new Date(m.utcDate).toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false }),
-                        teams: [m.homeTeam.name || "未定", m.awayTeam.name || "未定"],
-                        score: [m.score.fullTime.home, m.score.fullTime.away],
-                        status: m.status === 'FINISHED' ? 'finished' : 'scheduled',
-                        channel: Math.random() > 0.5 ? 'BBC Sport' : 'ITV Sport'
-                    }));
-                }
-            } catch (error) {
-                console.warn(error.message);
-                // 為了用戶體驗，加入 1 秒緩衝載入動畫
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            } finally {
-                loading.classList.add('hidden');
-                scheduleList.classList.remove('hidden');
-                renderSchedule(); 
-                renderStandings();
-                renderJumpButtons();
+            } catch (e) {
+                console.warn("首選代理失敗，嘗試備用代理...", e);
             }
+
+            // 2. 如果失敗，嘗試使用 AllOrigins 代理請求
+            if (!dataLoaded) {
+                try {
+                    console.log("正在通過備用代理 (AllOrigins) 連線...");
+                    const response = await fetch(PROXY_2);
+                    if (response.ok) {
+                        const outerData = await response.json();
+                        const data = JSON.parse(outerData.contents);
+                        if (data && data.matches) {
+                            parseApiMatches(data.matches);
+                            dataLoaded = true;
+                            apiStatus.innerText = '實時數據同步中 (備用)';
+                            apiStatus.className = 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold';
+                            console.log("AllOrigins 加載成功！");
+                        }
+                    }
+                } catch (e) {
+                    console.warn("所有動態代理連線失敗，降級使用本地緩存數據。", e);
+                }
+            }
+
+            // 3. 所有連線均失敗時：啟用優雅降級
+            if (!dataLoaded) {
+                apiStatus.innerText = '離線緩存';
+                apiStatus.className = 'bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold';
+                // 模擬 1 秒網絡延遲以展現加載狀態
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            // 計算積分榜並刷新渲染
+            recalculateStandings();
+            loading.classList.add('hidden');
+            scheduleList.classList.remove('hidden');
+            renderSchedule(); 
+            renderStandings();
+            renderJumpButtons();
+        }
+
+        // 解析 API 回傳資料並轉換格式
+        function parseApiMatches(apiMatches) {
+            matches = apiMatches.map(m => {
+                const utcDate = new Date(m.utcDate);
+                const localDateStr = utcDate.toLocaleDateString('zh-HK', { month: 'short', day: 'numeric', weekday: 'short' });
+                const localTimeStr = utcDate.toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit', hour12: false });
+                
+                return {
+                    date: localDateStr,
+                    time: localTimeStr,
+                    teams: [translateTeamName(m.homeTeam.name), translateTeamName(m.awayTeam.name)],
+                    score: [m.score.fullTime.home, m.score.fullTime.away],
+                    status: m.status === 'FINISHED' ? 'finished' : (m.status === 'IN_PLAY' ? 'live' : 'scheduled'),
+                    channel: m.id % 2 === 0 ? 'BBC Sport' : 'ITV Sport' // 賽事頻道對半分分配
+                };
+            });
+        }
+
+        // 查找隊伍所屬組別
+        function getGroupOfTeam(teamName) {
+            for (const groupName in teamsData) {
+                const found = teamsData[groupName].some(t => t.team === teamName);
+                if (found) return groupName;
+            }
+            return null;
+        }
+
+        // 根據賽程資料動態計算最新積分榜
+        function recalculateStandings() {
+            // 1. 清空所有積分
+            for (const groupName in teamsData) {
+                teamsData[groupName].forEach(t => {
+                    t.played = 0;
+                    t.w = 0; t.d = 0; t.l = 0;
+                    t.gf = 0; t.ga = 0; t.pts = 0;
+                });
+            }
+
+            // 2. 遍歷賽程計算完賽積分
+            matches.forEach(m => {
+                if (m.status === 'finished' && m.score[0] !== null && m.score[1] !== null) {
+                    const homeTeam = m.teams[0];
+                    const awayTeam = m.teams[1];
+                    const homeGroup = getGroupOfTeam(homeTeam);
+                    const awayGroup = getGroupOfTeam(awayTeam);
+
+                    if (homeGroup) {
+                        const t = teamsData[homeGroup].find(x => x.team === homeTeam);
+                        if (t) {
+                            t.played += 1;
+                            t.gf += m.score[0];
+                            t.ga += m.score[1];
+                            if (m.score[0] > m.score[1]) { t.w += 1; t.pts += 3; }
+                            else if (m.score[0] < m.score[1]) { t.l += 1; }
+                            else { t.d += 1; t.pts += 1; }
+                        }
+                    }
+
+                    if (awayGroup) {
+                        const t = teamsData[awayGroup].find(x => x.team === awayTeam);
+                        if (t) {
+                            t.played += 1;
+                            t.gf += m.score[1];
+                            t.ga += m.score[0];
+                            if (m.score[1] > m.score[0]) { t.w += 1; t.pts += 3; }
+                            else if (m.score[1] < m.score[0]) { t.l += 1; }
+                            else { t.d += 1; t.pts += 1; }
+                        }
+                    }
+                }
+            });
         }
 
         function switchTab(tab) {
@@ -289,7 +455,6 @@
             const filterText = document.getElementById('searchInput').value.toLowerCase();
             const container = document.getElementById('scheduleList');
             
-            // 同時過濾頻道和搜尋欄
             const filtered = matches.filter(m => {
                 const matchesSearch = m.teams.some(t => t.toLowerCase().includes(filterText));
                 const matchesChannel = (currentFilterChannel === 'All' || m.channel === currentFilterChannel);
@@ -330,7 +495,7 @@
                                 </div>
                                 <div class="text-right pl-4">
                                     <div class="text-lg md:text-xl font-mono font-bold text-slate-900 bg-stone-50 px-3 py-1.5 rounded-lg border border-stone-100 inline-block mb-2">
-                                        ${m.status === 'finished' ? `${m.score[0]} : ${m.score[1]}` : 'VS'}
+                                        ${m.status === 'finished' ? `${m.score[0]} : ${m.score[1]}` : (m.status === 'live' ? `<span class="text-red-600 animate-pulse">${m.score[0]} : ${m.score[1]} LIVE</span>` : 'VS')}
                                     </div>
                                     <div>
                                         <span class="${m.channel.includes('BBC') ? 'channel-badge-bbc' : 'channel-badge-itv'} uppercase">${m.channel}</span>
@@ -384,7 +549,6 @@
             }).join('');
         }
 
-        // 修改 onload 事件，改為執行 fetch 請求
         window.onload = () => { 
             fetchLatestSchedule(); 
         };
