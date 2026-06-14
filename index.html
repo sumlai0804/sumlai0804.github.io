@@ -224,7 +224,7 @@
             "Czechia": "捷克", "Czech Republic": "捷克",
             "South Africa": "南非",
             "Canada": "加拿大",
-            "Bosnia and Herzegovina": "波斯尼亞", "Bosnia": "波斯尼亞","Bosnia-Herzegovina": "波斯尼亞",
+            "Bosnia and Herzegovina": "波斯尼亞", "Bosnia": "波斯尼亞", "Bosnia-Herzegovina": "波斯尼亞", "Bosnia & Herzegovina": "波斯尼亞",
             "Qatar": "卡塔爾",
             "Switzerland": "瑞士",
             "United States": "美國", "USA": "美國", "US": "美國", "United States men's national soccer team": "美國",
@@ -244,7 +244,7 @@
             "Sweden": "瑞典",
             "Tunisia": "突尼西亞",
             "Spain": "西班牙",
-            "Cape Verde": "維德角", "Cabo Verde": "維德角",
+            "Cape Verde": "維德角", "Cabo Verde": "維德角", "Cape Verde Islands": "維德角",
             "Belgium": "比利時",
             "Egypt": "埃及",
             "Saudi Arabia": "沙特阿拉伯",
@@ -276,7 +276,13 @@
                                 .replace(/\s+national\s+soccer\s+team/gi, '')
                                 .replace(/\s+men's\s+national\s+soccer\s+team/gi, '')
                                 .trim();
-            return englishToChineseTeamMap[cleanName] || englishToChineseTeamMap[name] || name;
+            
+            // 嘗試精確匹配、連字符轉換成空格後匹配，或是直接對照
+            return englishToChineseTeamMap[cleanName] || 
+                   englishToChineseTeamMap[cleanName.replace(/-/g, ' ')] || 
+                   englishToChineseTeamMap[cleanName.replace(/&/g, 'and')] || 
+                   englishToChineseTeamMap[name] || 
+                   name;
         }
 
         // --- Fetch API 資料獲取與多重代理設定 ---
