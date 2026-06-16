@@ -290,6 +290,19 @@
             url => `https://corsproxy.io/?${encodeURIComponent(url)}`
         ];
 
+        // 引入本地快取控制變數 (快取有效期 5 分鐘)
+        const CACHE_KEY = 'wc2026_matches_cache';
+        const CACHE_TIME_KEY = 'wc2026_matches_cache_time';
+        const CACHE_EXPIRY = 5 * 60 * 1000; 
+
+        // 帶有超時控制的 fetch 輔助函數
+        function fetchWithTimeout(url, options, timeout = 3000) {
+            return Promise.race([
+                fetch(url, options),
+                new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), timeout))
+            ]);
+        }
+
         async function fetchWithRetry(url, token, proxyIndex = 0) {
             if (proxyIndex >= proxies.length) {
                 throw new Error("所有 CORS 代理連線均告失敗。");
@@ -298,16 +311,18 @@
             console.log(`正在使用代理 [${proxyIndex}] 連線: ${proxiedUrl}`);
             
             try {
-                const response = await fetch(proxiedUrl, {
+                // 每家代理限制最長 3 秒回應，超過即斷開換下一家，大幅提升載入流暢度
+                const response = await fetchWithTimeout(proxiedUrl, {
                     method: 'GET',
                     headers: { 'X-Auth-Token': token }
-                });
+                }, 3000);
+                
                 if (response.ok) {
                     return await response.json();
                 }
                 throw new Error(`HTTP 錯誤狀態: ${response.status}`);
             } catch (err) {
-                console.warn(`代理 [${proxyIndex}] 失敗，嘗試下一個...`, err);
+                console.warn(`代理 [${proxyIndex}] 失敗或超時，嘗試下一個...`, err.message);
                 return await fetchWithRetry(url, token, proxyIndex + 1);
             }
         }
@@ -319,8 +334,55 @@
 
             initData();
 
-            loading.classList.remove('hidden');
-            scheduleList.classList.add('hidden');
+            const cachedMatches = localStorage.getItem(CACHE_KEY);
+            const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+            const now = Date.now();
+            
+            let hasFreshCache = false;
+
+            // 1. 率先讀取本地緩存：實現「0 秒」開屏載入
+            if (cachedMatches && cachedTime) {
+                try {
+                    matches = JSON.parse(cachedMatches);
+                    recalculateStandings();
+                    
+                    // 立即渲染畫面，讓用戶立刻看到賽程與積分榜，不需等待 API
+                    loading.classList.add('hidden');
+                    scheduleList.classList.remove('hidden');
+                    renderSchedule(true); // 自動滾動至今日
+                    renderStandings();
+                    renderJumpButtons();
+
+                    apiStatus.innerText = '載入本地緩存中';
+                    apiStatus.className = 'bg-blue-500/15 text-blue-300 border border-blue-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold';
+
+                    // 判斷緩存是否新鮮（小於 5 分鐘）
+                    if (now - parseInt(cachedTime) < CACHE_EXPIRY) {
+                        hasFreshCache = true;
+                    }
+                } catch (e) {
+                    console.warn("解析本地緩存失敗", e);
+                }
+            }
+
+            // 2. 如果快取在 5 分鐘內，直接視為同步完成，不再耗費網路請求
+            if (hasFreshCache) {
+                apiStatus.innerText = '實時數據同步中 (緩存)';
+                apiStatus.className = 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold';
+                return;
+            }
+
+            const isBackgroundFetch = !!cachedMatches;
+
+            if (!isBackgroundFetch) {
+                // 完全無快取時才顯示全螢幕轉圈圈
+                loading.classList.remove('hidden');
+                scheduleList.classList.add('hidden');
+            } else {
+                // 背景靜默更新，不阻礙用戶瀏覽已加載的內容
+                apiStatus.innerText = '背景更新中...';
+                apiStatus.className = 'bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold animate-pulse';
+            }
 
             let dataLoaded = false;
 
@@ -328,6 +390,11 @@
                 const data = await fetchWithRetry(API_RAW_URL, API_TOKEN);
                 if (data && data.matches && data.matches.length > 0) {
                     parseApiMatches(data.matches);
+                    
+                    // 寫入快取與時間戳
+                    localStorage.setItem(CACHE_KEY, JSON.stringify(matches));
+                    localStorage.setItem(CACHE_TIME_KEY, now.toString());
+
                     dataLoaded = true;
                     apiStatus.innerText = '實時數據同步中';
                     apiStatus.className = 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold';
@@ -337,17 +404,28 @@
             }
 
             if (!dataLoaded) {
-                apiStatus.innerText = '本地數據庫運行中';
-                apiStatus.className = 'bg-stone-500/15 text-stone-300 border border-stone-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold';
-                await new Promise(resolve => setTimeout(resolve, 600));
+                if (!isBackgroundFetch) {
+                    apiStatus.innerText = '本地數據庫運行中';
+                    apiStatus.className = 'bg-stone-500/15 text-stone-300 border border-stone-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold';
+                    recalculateStandings();
+                    loading.classList.add('hidden');
+                    scheduleList.classList.remove('hidden');
+                    renderSchedule(true);
+                    renderStandings();
+                    renderJumpButtons();
+                } else {
+                    apiStatus.innerText = '數據同步失敗 (使用舊緩存)';
+                    apiStatus.className = 'bg-red-500/15 text-red-300 border border-red-500/30 text-xs px-2.5 py-0.5 rounded-full font-bold';
+                }
+            } else {
+                // 成功獲取新 API 數據，無縫刷新排版
+                recalculateStandings();
+                loading.classList.add('hidden');
+                scheduleList.classList.remove('hidden');
+                renderSchedule(false); // 避免背景刷新時畫面突然強制滾動
+                renderStandings();
+                renderJumpButtons();
             }
-
-            recalculateStandings();
-            loading.classList.add('hidden');
-            scheduleList.classList.remove('hidden');
-            renderSchedule(true); // 自動定位滾動至今日
-            renderStandings();
-            renderJumpButtons();
         }
 
         function parseApiMatches(apiMatches) {
@@ -527,8 +605,11 @@
         }
 
         function scrollToToday() {
-            // 目前世界盃 2026 時間定於 6月15日
-            const todayStr = "6月15日"; 
+            // 獲取今天日期並動態格式化
+            const today = new Date();
+            const month = today.getMonth() + 1;
+            const date = today.getDate();
+            const todayStr = `${month}月${date}日`; 
 
             const headers = document.querySelectorAll('#scheduleList h3');
             let matchedHeader = null;
@@ -537,6 +618,22 @@
                 if (header.innerText.includes(todayStr)) {
                     matchedHeader = header;
                     break;
+                }
+            }
+
+            // 備用方案：如果今天沒有比賽，自動往後尋找最接近的有比賽日期
+            if (!matchedHeader) {
+                for (const header of headers) {
+                    const match = header.innerText.match(/(\d+)月(\d+)日/);
+                    if (match) {
+                        const m = parseInt(match[1]);
+                        const d = parseInt(match[2]);
+                        const headerDate = new Date(2026, m - 1, d);
+                        if (headerDate >= today) {
+                            matchedHeader = header;
+                            break;
+                        }
+                    }
                 }
             }
 
