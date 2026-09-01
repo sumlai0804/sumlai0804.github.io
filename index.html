@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- SortableJS (拖曳排序庫) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -21,7 +19,6 @@
                         secondary: '#10B981',
                         accent: '#F59E0B',
                         dark: '#1E293B',
-                        cardBg: '#FFFFFF',
                     },
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
@@ -53,17 +50,9 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
         }
-        .sortable-ghost {
-            opacity: 0.4;
-            background-color: #E2E8F0 !important;
-            border: 2px dashed #3B82F6 !important;
-        }
-        .sortable-drag {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-        }
     </style>
 </head>
-<body class="pb-28 max-w-md mx-auto min-h-screen relative shadow-2xl bg-slate-50 border-x border-slate-200">
+<body class="pb-24 max-w-md mx-auto min-h-screen relative shadow-2xl bg-slate-50 border-x border-slate-200">
 
     <!-- 頂部導覽列 -->
     <header class="sticky top-0 z-40 glass-header border-b border-slate-200/80 px-4 py-3">
@@ -118,21 +107,10 @@
         </div>
     </div>
 
-    <!-- 提示拖曳與重置 -->
-    <div class="px-4 pt-2 flex justify-between items-center text-[11px] text-slate-400">
-        <span><i class="fa-solid fa-hand-pointer mr-1"></i>握住握把拖曳排序，按 <i class="fa-solid fa-calendar-day"></i> 移動日期</span>
-        <button onclick="resetData()" class="hover:text-red-500 underline">重置預設行程</button>
-    </div>
-
-    <!-- 行程卡片容器 (可拖曳排序) -->
+    <!-- 行程卡片容器 -->
     <main class="p-4 space-y-3" id="itinerary-list">
         <!-- 卡片將由 JavaScript 動態生成 -->
     </main>
-
-    <!-- 新增景點懸浮按鈕 (FAB) -->
-    <button onclick="openAddModal()" class="fixed bottom-20 right-5 w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center text-xl z-30 hover:bg-blue-700 active:scale-90 transition">
-        <i class="fa-solid fa-plus"></i>
-    </button>
 
     <!-- 底部導覽列 -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-200 px-6 py-2 flex justify-around items-center z-30 shadow-lg">
@@ -144,94 +122,11 @@
             <i class="fa-solid fa-money-bill-transfer text-lg mb-0.5"></i>
             <span>匯率轉換</span>
         </button>
-        <button onclick="openAddModal()" class="flex flex-col items-center text-slate-400 hover:text-slate-600 font-medium text-xs py-1">
-            <i class="fa-solid fa-circle-plus text-lg mb-0.5"></i>
-            <span>新增景點</span>
-        </button>
+        <a href="https://maps.google.com" target="_blank" class="flex flex-col items-center text-slate-400 hover:text-slate-600 font-medium text-xs py-1">
+            <i class="fa-solid fa-compass text-lg mb-0.5"></i>
+            <span>Google地圖</span>
+        </a>
     </nav>
-
-    <!-- 移動景點日期 Modal -->
-    <div id="move-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md p-6 shadow-2xl transform translate-y-full sm:translate-y-0 transition-transform duration-300">
-            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-800">變更行程日期</h2>
-                    <p id="move-item-name" class="text-xs text-blue-600 font-semibold mt-0.5"></p>
-                </div>
-                <button onclick="closeMoveModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <p class="text-xs text-slate-500 mb-3">請選擇要將此景點移動至哪一天：</p>
-
-            <div class="grid grid-cols-2 gap-2 mb-4" id="move-days-container">
-                <!-- 由 JS 動態生成日期按鈕 -->
-            </div>
-
-            <button onclick="closeMoveModal()" class="w-full py-2.5 bg-slate-100 text-slate-600 rounded-xl font-semibold text-xs hover:bg-slate-200 transition">
-                取消
-            </button>
-        </div>
-    </div>
-
-    <!-- 新增景點 Modal -->
-    <div id="add-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-t-3xl sm:rounded-2xl w-full max-w-md p-6 shadow-2xl transform translate-y-full sm:translate-y-0 transition-transform duration-300 max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100">
-                <h2 class="text-lg font-bold text-slate-800">新增景點至行程</h2>
-                <button onclick="closeAddModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <form id="add-item-form" onsubmit="handleAddSubmit(event)" class="space-y-3">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">景點 / 餐廳名稱 *</label>
-                    <input type="text" id="add-name" required placeholder="例如: 高台寺粉麵" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">類別標籤</label>
-                        <select id="add-type" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <option value="Coffee shop">Coffee shop (咖啡廳)</option>
-                            <option value="Vietnamese restaurant">Vietnamese restaurant (越南菜)</option>
-                            <option value="Seafood restaurant">Seafood restaurant (海鮮餐廳)</option>
-                            <option value="Cafe">Cafe</option>
-                            <option value="Scenic spot">Scenic spot (景點)</option>
-                            <option value="Hotel">Hotel (飯店)</option>
-                            <option value="Bar">Bar (酒吧)</option>
-                            <option value="Other">Other (其他)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">營業時間</label>
-                        <input type="text" id="add-opentime" placeholder="例如: 8:00–22:00" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">中文簡介描述</label>
-                    <input type="text" id="add-desc" placeholder="例如: 當地特色高樓粉，必試老店" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">預約 / 備註資訊</label>
-                    <input type="text" id="add-booking" placeholder="例如: Booked 18:00 via email" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Google Maps 搜尋關鍵字 *</label>
-                    <input type="text" id="add-mapquery" required placeholder="例如: Cao Lau Hoi An" class="w-full text-sm bg-slate-50 border border-slate-200 rounded-xl p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                </div>
-
-                <button type="submit" class="w-full py-3 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-md hover:bg-blue-700 transition mt-2">
-                    加入目前行程
-                </button>
-            </form>
-        </div>
-    </div>
 
     <!-- 匯率轉換器 Modal -->
     <div id="calc-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center hidden opacity-0 transition-opacity duration-300">
@@ -314,26 +209,24 @@
         </div>
     </div>
 
-    <!-- JavaScript 邏輯與資料庫管理 -->
+    <!-- JavaScript 邏輯 -->
     <script>
-        // 預設行程資料
-        const defaultData = {
+        // 最終靜態行程資料
+        const itineraryData = {
             sat: {
                 dateTitle: "Sat 9/12",
                 subtitle: "市區探索與龍橋夜景",
                 stats: "2 hrs 2 mins, 16 km",
                 items: [
                     {
-                        uid: "sat_1",
                         name: "Lighthouse",
-                        desc: "工業風質感精品咖啡店，環境寬洋舒適，適合機後歎杯咖啡歇腳。",
+                        desc: "工業風質感精品咖啡店，環境寬洋舒適，適合落機後歎杯咖啡歇腳。",
                         type: "Coffee shop",
                         typeBg: "bg-amber-100 text-amber-800",
                         openTime: "7:30–22:00",
                         mapQuery: "Lighthouse Coffee Da Nang"
                     },
                     {
-                        uid: "sat_2",
                         name: "Four Points by Sheraton Danang",
                         desc: "五星級海景酒店，位於美溪沙灘第一排，視野遼闊且設施完善豪華。",
                         type: "Hotel",
@@ -342,7 +235,6 @@
                         mapQuery: "Four Points by Sheraton Danang"
                     },
                     {
-                        uid: "sat_3",
                         name: "GO! Đà Nẵng",
                         desc: "峴港大型量販賣場超市，買越南腰果、咖啡豆及各類伴手禮首選。",
                         type: "Supermarket",
@@ -351,7 +243,6 @@
                         mapQuery: "GO! Da Nang Supermarket"
                     },
                     {
-                        uid: "sat_5",
                         name: "WONDERLUST - Coffee & Souvenir",
                         desc: "複合式白色文青咖啡館，兼賣文創周邊小物與質感紀念品。",
                         type: "Coffee shop",
@@ -360,7 +251,6 @@
                         mapQuery: "WONDERLUST Coffee & Souvenir Da Nang"
                     },
                     {
-                        uid: "sat_6",
                         name: "Mộc quán Seafood Đà Nẵng",
                         desc: "峴港超人氣海鮮大排檔，環境乾淨且海鮮新鮮現煮，CP值極高。",
                         type: "Seafood restaurant",
@@ -370,7 +260,6 @@
                         mapQuery: "Moc quan Seafood Da Nang"
                     },
                     {
-                        uid: "sat_7",
                         name: "Dragon Bridge (龍橋)",
                         desc: "峴港地標大橋，週末晚上 9:00 會展現震撼的龍頭噴火噴水秀。",
                         type: "Bridge",
@@ -379,7 +268,6 @@
                         mapQuery: "Dragon Bridge Da Nang"
                     },
                     {
-                        uid: "sat_8",
                         name: "Duy Tịnh Rooftop Bar Đà Nẵng",
                         desc: "絕佳高空露天酒吧，能一覽韓江夜景與龍橋噴火表演。",
                         type: "Cocktail bar",
@@ -396,7 +284,6 @@
                 stats: "1 hr 10 mins, 38 km",
                 items: [
                     {
-                        uid: "sun_cathedral",
                         name: "Da Nang Cathedral (峴港粉紅教堂)",
                         desc: "粉紅夢幻哥德式教堂，法國殖民時期建築，必去打卡熱點。",
                         type: "Scenic spot",
@@ -405,7 +292,6 @@
                         mapQuery: "Da Nang Cathedral"
                     },
                     {
-                        uid: "sun_starkitchen",
                         name: "Star Kitchen Souvenir Gift Shop - Danang",
                         desc: "日系質感伴手禮店，必買精緻鳳梨酥、越南咖啡與禮盒手信。",
                         type: "Souvenir shop",
@@ -414,7 +300,6 @@
                         mapQuery: "Star Kitchen Souvenir Gift Shop Da Nang"
                     },
                     {
-                        uid: "sun_pizza",
                         name: "Pizza 4P's Indochina Da Nang",
                         desc: "越南超人氣日系窯烤披薩，主打自家手工新鮮布拉塔起司（Burrata）。",
                         type: "Pizza restaurant",
@@ -423,7 +308,6 @@
                         mapQuery: "Pizza 4P's Indochina Da Nang"
                     },
                     {
-                        uid: "sun_1",
                         name: "Old Town (會安古鎮)",
                         desc: "世界文化遺產，滿街黃色古老建築與五彩燈籠，夜景極富詩意。",
                         type: "Scenic spot",
@@ -432,7 +316,6 @@
                         mapQuery: "Hoi An Ancient Town"
                     },
                     {
-                        uid: "sun_2",
                         name: "Uncle huan coffee",
                         desc: "會安古鎮風情咖啡館，特色蛋咖啡（Egg Coffee）香醇濃郁。",
                         type: "Coffee shop",
@@ -441,7 +324,6 @@
                         mapQuery: "Uncle huan coffee Hoi An"
                     },
                     {
-                        uid: "sun_3",
                         name: "Madam Khanh - The Banh Mi Queen",
                         desc: "被譽為「法包女王」的名店，外皮酥脆、餡料滿溢的必吃越南法包。",
                         type: "Sandwich shop",
@@ -450,7 +332,6 @@
                         mapQuery: "Madam Khanh - The Banh Mi Queen"
                     },
                     {
-                        uid: "sun_4",
                         name: "HOME Hoi An",
                         desc: "古宅改造的精緻越南料理餐廳，氣氛高雅且經典菜色口味細緻。",
                         type: "Vietnamese restaurant",
@@ -464,19 +345,9 @@
             mon: {
                 dateTitle: "Mon 9/14",
                 subtitle: "五行山與特色美食咖啡",
-                stats: "1 hr 15 mins, 48 km",
+                stats: "1 hr 10 mins, 42 km",
                 items: [
                     {
-                        uid: "mon_1",
-                        name: "XLIII Specialty Coffee",
-                        desc: "極簡極致的極淺焙精品咖啡館，前衛建築設計非常震撼感官。",
-                        type: "Coffee shop",
-                        typeBg: "bg-amber-100 text-amber-800",
-                        openTime: "6:30–22:30",
-                        mapQuery: "XLIII Specialty Coffee Da Nang"
-                    },
-                    {
-                        uid: "mon_2",
                         name: "NU ĐỒ",
                         desc: "名廚主理的特色廣南麵（Mì Quảng）店，傳統美食現代精緻呈現。",
                         type: "Vietnamese restaurant",
@@ -485,7 +356,6 @@
                         mapQuery: "NU DO Da Nang"
                     },
                     {
-                        uid: "mon_3",
                         name: "Roost Coffee Roasters | Da Nang",
                         desc: "自烘精品咖啡烘焙工坊，手沖品質極佳，氣氛悠閒寧靜。",
                         type: "Coffee shop",
@@ -494,7 +364,6 @@
                         mapQuery: "Roost Coffee Roasters Da Nang"
                     },
                     {
-                        uid: "mon_4",
                         name: "The Marble Mountains (五行山)",
                         desc: "五座石灰岩大理石山峰，包含天然玄空洞穴與壯觀古寺名勝。",
                         type: "Scenic spot",
@@ -503,7 +372,6 @@
                         mapQuery: "The Marble Mountains Da Nang"
                     },
                     {
-                        uid: "mon_5",
                         name: "Mayaca Garden Coffee",
                         desc: "綠意盎然的庭園式咖啡館，彷彿置身熱帶雨林，極具放鬆感。",
                         type: "Cafe",
@@ -512,7 +380,6 @@
                         mapQuery: "Mayaca Garden Coffee Da Nang"
                     },
                     {
-                        uid: "mon_6",
                         name: "Le Comptoir",
                         desc: "高端法式小酒館，經典道地法式料理與優質葡萄酒搭配。",
                         type: "French restaurant",
@@ -529,7 +396,6 @@
                 stats: "31 mins, 7 km",
                 items: [
                     {
-                        uid: "tue_1",
                         name: "Bếp Cuốn Đà Nẵng - Michelin Selected 2025",
                         desc: "榮獲米其林指南入選，主打道地越南春捲組合與傳統卷餅。",
                         type: "Vietnamese restaurant",
@@ -539,7 +405,6 @@
                         mapQuery: "Bep Cuon Da Nang"
                     },
                     {
-                        uid: "tue_2",
                         name: "PASSPORT Coffee Roastery",
                         desc: "專業自烘咖啡工作室，提供多元產區單品豆，咖啡迷別錯過。",
                         type: "Cafe",
@@ -551,53 +416,17 @@
             }
         };
 
-        // 全域狀態管理
-        let itineraryData = {};
         let currentTab = 'sat';
-        let sortableInstance = null;
-        let itemToMoveUid = null;
 
-        // 初始化
         window.onload = function() {
-            loadSavedData();
             switchTab('sat');
-            initSortable();
             calculateCurrency();
         };
-
-        // 載入 localStorage 資料
-        function loadSavedData() {
-            const saved = localStorage.getItem('danang_itinerary_v10');
-            if (saved) {
-                try {
-                    itineraryData = JSON.parse(saved);
-                } catch(e) {
-                    itineraryData = JSON.parse(JSON.stringify(defaultData));
-                }
-            } else {
-                itineraryData = JSON.parse(JSON.stringify(defaultData));
-            }
-        }
-
-        // 儲存資料至 localStorage
-        function saveData() {
-            localStorage.setItem('danang_itinerary_v10', JSON.stringify(itineraryData));
-        }
-
-        // 重置資料
-        function resetData() {
-            if (confirm('確定要還原為初始的行程設定嗎？')) {
-                itineraryData = JSON.parse(JSON.stringify(defaultData));
-                saveData();
-                renderItinerary(currentTab);
-            }
-        }
 
         // 切換日期標籤
         function switchTab(tabKey) {
             currentTab = tabKey;
             
-            // 更新 UI 標籤樣式
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('tab-active');
                 btn.classList.add('bg-white', 'text-slate-600');
@@ -608,7 +437,6 @@
                 activeBtn.classList.remove('bg-white', 'text-slate-600');
             }
 
-            // 渲染列表
             renderItinerary(tabKey);
         }
 
@@ -617,7 +445,7 @@
             const data = itineraryData[tabKey];
             if (!data) return;
             
-            // 渲染 header
+            // 渲染 Header
             const headerContainer = document.getElementById('day-header');
             headerContainer.innerHTML = `
                 <div>
@@ -633,60 +461,36 @@
 
             // 渲染卡片
             const container = document.getElementById('itinerary-list');
-            if (!data.items || data.items.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-10 bg-white rounded-2xl border border-dashed border-slate-300">
-                        <p class="text-slate-400 text-sm font-medium">今天還沒有安排行程喔！</p>
-                        <button onclick="openAddModal()" class="mt-2 text-xs text-blue-600 font-bold underline">+ 新增第一個景點</button>
-                    </div>
-                `;
-                return;
-            }
-
             let html = '';
+
             data.items.forEach((item, index) => {
                 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.mapQuery)}`;
 
                 html += `
-                    <div class="drag-item bg-white rounded-2xl p-4 shadow-md border border-slate-200/60 relative transition-all" data-uid="${item.uid}">
-                        <!-- 頂部、移動與刪除按鈕 -->
+                    <div class="bg-white rounded-2xl p-4 shadow-md border border-slate-200/60 transition-all">
+                        <!-- 頂部與標籤 -->
                         <div class="flex justify-between items-center gap-2 mb-2">
                             <div class="flex items-center gap-2">
-                                <!-- 拖曳握把 -->
-                                <div class="drag-handle cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 p-1">
-                                    <i class="fa-solid fa-grip-vertical text-lg"></i>
-                                </div>
-                                <span class="badge-index w-6 h-6 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-sm">
+                                <span class="w-6 h-6 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-sm">
                                     ${index + 1}
                                 </span>
                                 <span class="text-xs font-semibold px-2.5 py-0.5 rounded-md ${item.typeBg || 'bg-slate-100 text-slate-800'}">
                                     ${item.type || 'Other'}
                                 </span>
                             </div>
-                            
-                            <div class="flex items-center gap-1">
-                                <!-- 移動跨日按鈕 -->
-                                <button onclick="openMoveModal('${item.uid}')" class="text-slate-400 hover:text-blue-600 p-1.5 rounded-lg hover:bg-blue-50 transition" title="移至其他日期">
-                                    <i class="fa-solid fa-calendar-day text-sm"></i>
-                                </button>
-                                <!-- 刪除按鈕 -->
-                                <button onclick="deleteItem('${item.uid}')" class="text-slate-300 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 transition" title="刪除此景點">
-                                    <i class="fa-solid fa-trash-can text-sm"></i>
-                                </button>
-                            </div>
                         </div>
 
-                        <!-- 內容細節與中文簡介 -->
+                        <!-- 行程名稱與簡介 -->
                         <div class="mt-1">
                             <h3 class="font-bold text-slate-800 text-base leading-snug">${item.name}</h3>
                             
                             ${item.desc ? `
-                                <p class="text-xs text-slate-600 font-medium mt-1 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-100">
+                                <p class="text-xs text-slate-600 font-medium mt-1.5 leading-relaxed bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                                     <i class="fa-solid fa-quote-left text-[10px] text-blue-400 mr-1"></i>${item.desc}
                                 </p>
                             ` : ''}
 
-                            <div class="mt-2 space-y-1 text-xs text-slate-500">
+                            <div class="mt-2.5 space-y-1 text-xs text-slate-500">
                                 ${item.openTime ? `
                                     <div class="flex items-center gap-1.5">
                                         <i class="fa-regular fa-clock text-slate-400"></i>
@@ -710,9 +514,9 @@
                             </div>
                         </div>
 
-                        <!-- 導航按鈕 -->
+                        <!-- Google Maps 導航按鈕 -->
                         <div class="mt-3 pt-3 border-t border-slate-100">
-                            <a href="${mapsUrl}" target="_blank" class="w-full py-2 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition active:scale-98">
+                            <a href="${mapsUrl}" target="_blank" class="w-full py-2.5 bg-slate-900 hover:bg-blue-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition active:scale-98">
                                 <i class="fa-solid fa-location-arrow text-emerald-400"></i>
                                 <span>在 Google Maps 開啟導航</span>
                             </a>
@@ -724,185 +528,7 @@
             container.innerHTML = html;
         }
 
-        // 初始化拖曳功能
-        function initSortable() {
-            const el = document.getElementById('itinerary-list');
-            if (!el) return;
-            sortableInstance = new Sortable(el, {
-                handle: '.drag-handle',
-                animation: 200,
-                ghostClass: 'sortable-ghost',
-                dragClass: 'sortable-drag',
-                onEnd: function () {
-                    const newOrderUids = Array.from(el.querySelectorAll('.drag-item')).map(item => item.getAttribute('data-uid'));
-                    
-                    const currentItems = itineraryData[currentTab].items;
-                    const reordered = [];
-                    
-                    newOrderUids.forEach(uid => {
-                        const found = currentItems.find(i => i.uid === uid);
-                        if (found) reordered.push(found);
-                    });
-
-                    itineraryData[currentTab].items = reordered;
-                    saveData();
-
-                    el.querySelectorAll('.drag-item').forEach((itemEl, idx) => {
-                        const badge = itemEl.querySelector('.badge-index');
-                        if (badge) badge.innerText = idx + 1;
-                    });
-                }
-            });
-        }
-
-        // 跨日移動 Modal 控制與邏輯
-        function openMoveModal(uid) {
-            itemToMoveUid = uid;
-            
-            let foundItem = null;
-            Object.keys(itineraryData).forEach(day => {
-                const target = itineraryData[day].items.find(i => i.uid === uid);
-                if (target) foundItem = target;
-            });
-
-            if (!foundItem) return;
-
-            document.getElementById('move-item-name').innerText = foundItem.name;
-
-            const daysContainer = document.getElementById('move-days-container');
-            let daysHtml = '';
-            
-            const daysKeys = [
-                { key: 'sat', label: 'Sat 9/12' },
-                { key: 'sun', label: 'Sun 9/13' },
-                { key: 'mon', label: 'Mon 9/14' },
-                { key: 'tue', label: 'Tue 9/15' }
-            ];
-
-            daysKeys.forEach(day => {
-                const isCurrent = day.key === currentTab;
-                if (isCurrent) {
-                    daysHtml += `
-                        <button disabled class="py-3 px-3 bg-slate-100 text-slate-400 rounded-xl text-xs font-bold border border-slate-200 cursor-not-allowed opacity-60">
-                            ${day.label} (目前)
-                        </button>
-                    `;
-                } else {
-                    daysHtml += `
-                        <button onclick="moveItemTo('${day.key}')" class="py-3 px-3 bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white rounded-xl text-xs font-bold border border-blue-200 transition active:scale-95 flex items-center justify-between">
-                            <span>${day.label}</span>
-                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                        </button>
-                    `;
-                }
-            });
-
-            daysContainer.innerHTML = daysHtml;
-
-            const modal = document.getElementById('move-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('translate-y-full');
-            }, 10);
-        }
-
-        function closeMoveModal() {
-            const modal = document.getElementById('move-modal');
-            modal.querySelector('div').classList.add('translate-y-full');
-            modal.classList.add('opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        function moveItemTo(targetDayKey) {
-            if (!itemToMoveUid || targetDayKey === currentTab) return;
-
-            const itemIndex = itineraryData[currentTab].items.findIndex(i => i.uid === itemToMoveUid);
-            if (itemIndex === -1) return;
-
-            const [movedItem] = itineraryData[currentTab].items.splice(itemIndex, 1);
-
-            if (!itineraryData[targetDayKey].items) {
-                itineraryData[targetDayKey].items = [];
-            }
-            itineraryData[targetDayKey].items.push(movedItem);
-
-            saveData();
-            closeMoveModal();
-            setTimeout(() => {
-                switchTab(targetDayKey);
-            }, 250);
-        }
-
-        // 刪除景點
-        function deleteItem(uid) {
-            if (confirm('確定要刪除這個景點嗎？')) {
-                itineraryData[currentTab].items = itineraryData[currentTab].items.filter(i => i.uid !== uid);
-                saveData();
-                renderItinerary(currentTab);
-            }
-        }
-
-        // 表單提交：新增景點
-        function handleAddSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('add-name').value;
-            const type = document.getElementById('add-type').value;
-            const openTime = document.getElementById('add-opentime').value;
-            const desc = document.getElementById('add-desc').value;
-            const booking = document.getElementById('add-booking').value;
-            const mapQuery = document.getElementById('add-mapquery').value;
-
-            const bgMap = {
-                'Coffee shop': 'bg-amber-100 text-amber-800',
-                'Vietnamese restaurant': 'bg-red-100 text-red-800',
-                'Seafood restaurant': 'bg-cyan-100 text-cyan-800',
-                'Cafe': 'bg-amber-100 text-amber-800',
-                'Scenic spot': 'bg-purple-100 text-purple-800',
-                'Hotel': 'bg-blue-100 text-blue-800',
-                'Bar': 'bg-purple-100 text-purple-800',
-                'Other': 'bg-slate-100 text-slate-800'
-            };
-
-            const newItem = {
-                uid: 'custom_' + Date.now(),
-                name,
-                type,
-                typeBg: bgMap[type] || 'bg-slate-100 text-slate-800',
-                openTime: openTime || '尚未設定',
-                desc: desc || '',
-                booking: booking || null,
-                mapQuery
-            };
-
-            itineraryData[currentTab].items.push(newItem);
-            saveData();
-            renderItinerary(currentTab);
-            closeAddModal();
-            document.getElementById('add-item-form').reset();
-        }
-
-        // Modal 開啟/關閉邏輯
-        function openAddModal() {
-            const modal = document.getElementById('add-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('translate-y-full');
-            }, 10);
-        }
-
-        function closeAddModal() {
-            const modal = document.getElementById('add-modal');
-            modal.querySelector('div').classList.add('translate-y-full');
-            modal.classList.add('opacity-0');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
+        // 匯率計算 Modal
         function openCalcModal() {
             const modal = document.getElementById('calc-modal');
             modal.classList.remove('hidden');
@@ -921,7 +547,7 @@
             }, 300);
         }
 
-        // 匯率計算
+        // 匯率計算邏輯
         function calculateCurrency() {
             const vnd = parseFloat(document.getElementById('vnd-input').value) || 0;
             const rateTwd = 780;
